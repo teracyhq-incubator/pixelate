@@ -206,8 +206,8 @@ var pixelate = (function(window, $, _, Backbone, undefined) {
 
   });
 
-  return function() {
-    return new Pixelate(arguments);
+  return function(canvas, options) {
+    return new Pixelate(canvas, options);
   };
 
 })(window, jQuery, _, Backbone);

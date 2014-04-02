@@ -32,6 +32,9 @@
           }).
           on('mask', function(radius, selectedArea) {
             console.log('masked with radius: ' + radius + ' and selectedArea: ', selectedArea);
+          }).
+          on('unmask', function(selectedArea) {
+            console.log('unmasked ', selectedArea);
           });
 
 

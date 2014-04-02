@@ -26,7 +26,7 @@
  * -----------
  *
  * select(x, y, width, height) //select pixelated area programmingly
- * clear //clear the selected area
+ * clear //clear the selected area, deselects
  * mask
  * unmask
  * pixelate
@@ -175,18 +175,18 @@ var pixelate = (function(window, $, _, Backbone, undefined) {
      */
     clear: function() {
       var sltArea = this.getSelectedArea();
-      this._selectorContext.clearRect(sltArea.x, sltArea.y, sltArea.width, sltArea.height);
-      this.trigger('select:clear', _.clone(selectedArea));
-
+      this.unmask();
+      this._selectedArea = selectedArea(0, 0, 0, 0);
+      this.trigger('select:clear', _.clone(sltArea));
       return this;
     },
     /**
-     * Gets the selected area
+     * Gets the selected area, this is immutable
      *
      * @return the selected area
      */
     getSelectedArea: function() {
-      return this._selectedArea;
+      return _.clone(this._selectedArea);
     },
     /**
      * Masks the selected area with pixelation.
@@ -221,7 +221,7 @@ var pixelate = (function(window, $, _, Backbone, undefined) {
 
       this._selectorContext.putImageData(pixelatedImgData, sltArea.x, sltArea.y);
 
-      this.trigger('mask', radius, _.clone(this.getSelectedArea()));
+      this.trigger('mask', radius, sltArea);
       return this;
     },
     /**
@@ -229,8 +229,9 @@ var pixelate = (function(window, $, _, Backbone, undefined) {
      * image part.
      */
     unmask: function() {
-      //TODO: implement this
-      this.trigger('unmask', _.clone(this.getSelectedArea()));
+      var sltArea = this.getSelectedArea();
+      this._selectorContext.clearRect(sltArea.x, sltArea.y, sltArea.width, sltArea.height);
+      this.trigger('unmask', sltArea);
       return this;
     },
     /**

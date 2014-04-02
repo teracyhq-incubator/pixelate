@@ -145,6 +145,12 @@ var pixelate = (function(window, $, _, Backbone, undefined) {
       this._$originalCanvas.after($selectorCanvas);
     },
     /**
+     * Disposes this selector (de-init).
+     */
+    disposeSelector: function() {
+
+    },
+    /**
      * Selects an area for masking, unmasking and pixelating.
      *
      * @param x the x position on the canvas
@@ -175,7 +181,7 @@ var pixelate = (function(window, $, _, Backbone, undefined) {
      */
     clear: function() {
       var sltArea = this.getSelectedArea();
-      this.unmask();
+      this._selectorContext.clearRect(sltArea.x, sltArea.y, sltArea.width, sltArea.height);
       this._selectedArea = selectedArea(0, 0, 0, 0);
       this.trigger('select:clear', _.clone(sltArea));
       return this;
@@ -249,6 +255,9 @@ var pixelate = (function(window, $, _, Backbone, undefined) {
   _.extend(Pixelate.prototype, {
     initUISelector: function() {
 
+    },
+    disposeUISelector: function() {
+
     }
   });
 
@@ -304,6 +313,8 @@ var pixelate = (function(window, $, _, Backbone, undefined) {
      */
     dispose: function() {
       //TODO: implement this
+      this.disposeUISelector();
+      this.disposeSelector();
       this.trigger('dispose');
       return this;
     }

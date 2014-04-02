@@ -35,6 +35,9 @@
           }).
           on('unmask', function(selectedArea) {
             console.log('unmasked ', selectedArea);
+          }).
+          on('dispose', function() {
+            console.log('disposed');
           });
 
 

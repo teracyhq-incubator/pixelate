@@ -120,9 +120,7 @@ var pixelate = (function(window, $, _, Backbone, undefined) {
           $selectorCanvas = this._$selectorCanvas = $(selectorCanvas),
           selectorContext = this._selectorContext = selectorCanvas.getContext('2d');
 
-      if (this.options.selector.masked) {
-        this._masked = true;
-      }
+      this._masked = this.options.selector.masked;
 
       selectorContext.fillStyle = this.options.selector.fillStyle;
       selectorContext.lineWidth = this.options.selector.lineWidth;

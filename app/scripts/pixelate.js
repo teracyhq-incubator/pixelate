@@ -64,7 +64,7 @@
 
 // temporary huge dependency on jQuery, _ and Backbone
 // TODO(hoatle): reduce huge dependency
-var pixelate = (function(window, $, _, Backbone, undefined) {
+(function(window, $, _, Backbone, undefined) {
   'use strict';
 
   /**
@@ -350,7 +350,8 @@ var pixelate = (function(window, $, _, Backbone, undefined) {
 
   });
 
-  return function(canvas, options) {
+  //export
+  window.pixelate = function(canvas, options) {
     return new Pixelate(canvas, options);
   };
 

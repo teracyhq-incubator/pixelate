@@ -77,7 +77,8 @@
       fillStyle: 'rgba(255, 255, 255, 1)',
       lineWidth: 0.5,
       strokeStyle: 'black'
-    }
+    },
+    debug: false
   };
 
   /**
@@ -243,14 +244,15 @@
       pixelatedContext.drawImage(pixelatedCanvas, 0, 0, pixelatedWidth, pixelatedHeight,
           0, 0, currentCanvas.width, currentCanvas.height);
 
-      //debugging
-      var debugCanvas = document.getElementById('debug-canvas'),
-          debugCanvasContext = debugCanvas.getContext('2d');
+      if (this.options.debug) {
+        //debugging
+        var debugCanvas = document.getElementById('debug-canvas'),
+            debugCanvasContext = debugCanvas.getContext('2d');
 
-      debugCanvas.width = currentCanvas.width;
-      debugCanvas.height = currentCanvas.height;
-      debugCanvasContext.drawImage(pixelatedCanvas, 0, 0);
-
+        debugCanvas.width = currentCanvas.width;
+        debugCanvas.height = currentCanvas.height;
+        debugCanvasContext.drawImage(pixelatedCanvas, 0, 0);
+      }
 
       var pixelatedImgData = pixelatedContext.getImageData(sltArea.x, sltArea.y, sltArea.width, sltArea.height);
 

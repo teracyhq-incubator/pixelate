@@ -15,7 +15,9 @@
     img.src = '/assets/darth-vader.jpg';
 
     function initPixelate() {
-      var pxl = window.pxl = pixelate(mainCanvas); //export pxl to test on console
+      var pxl = window.pxl = pixelate(mainCanvas, {
+        debug: true
+      }); //export pxl to test on console
 
       window.originalCtx = pxl._originalCanvas.getContext('2d');
       window.selectorCtx = pxl._selectorContext;

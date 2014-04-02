@@ -198,10 +198,11 @@ var pixelate = (function(window, $, _, Backbone, undefined) {
      * @param radius optional radius option, if not specified, global option is used.
      */
     mask: function(radius) {
+      radius = radius || this.options.radius;
       var pixelatedCanvas = document.createElement('canvas'),
           pixelatedContext = pixelatedCanvas.getContext('2d'),
           sltArea = this.getSelectedArea(),
-          pixelatedRatio = (radius || this.options.radius) / 100,
+          pixelatedRatio = radius / 100,
           currentCanvas = this.getCurrentCanvas(),
           //imgData = this.getCurrentCanvasContext().getImageData(0, 0, this.getCurrentCanvas().width, this.getCurrentCanvas().height),
           pixelatedWidth = currentCanvas.width * pixelatedRatio,
@@ -220,7 +221,7 @@ var pixelate = (function(window, $, _, Backbone, undefined) {
 
       this._selectorContext.putImageData(pixelatedImgData, sltArea.x, sltArea.y);
 
-      this.trigger('mask', _.clone(this.getSelectedArea()));
+      this.trigger('mask', radius, _.clone(this.getSelectedArea()));
       return this;
     },
     /**

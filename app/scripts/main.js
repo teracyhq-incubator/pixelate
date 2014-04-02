@@ -29,6 +29,9 @@
           }).
           on('select:clear', function(selectedArea) {
             console.log('select cleared', selectedArea);
+          }).
+          on('mask', function(radius, selectedArea) {
+            console.log('masked with radius: ' + radius + ' and selectedArea: ', selectedArea);
           });
 
 

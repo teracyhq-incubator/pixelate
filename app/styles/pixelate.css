@@ -1,0 +1,27 @@
+/**
+ * style for pixelate
+ */
+
+.pixelate-parent {
+  position: relative;
+}
+
+.pixelate-src {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.pixelate-selector {
+  image-rendering: optimizeSpeed;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: -o-crisp-edges;
+  image-rendering: crisp-edges;
+  -ms-interpolation-mode: nearest-neighbor;
+  border: 1px solid #000; /** for debugging **/
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 9;
+}

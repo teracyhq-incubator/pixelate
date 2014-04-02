@@ -201,7 +201,7 @@
       var sltArea = this.getSelectedArea();
       this._selectorContext.clearRect(sltArea.x, sltArea.y, sltArea.width, sltArea.height);
       this._selectedArea = selectedArea(0, 0, 0, 0);
-      this.trigger('select:clear', _.clone(sltArea));
+      this.trigger('select:clear', sltArea);
       return this;
     },
     /**

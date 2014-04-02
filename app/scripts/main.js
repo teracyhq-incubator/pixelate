@@ -17,6 +17,9 @@
     function initPixelate() {
       var pxl = window.pxl = pixelate(mainCanvas); //export pxl to test on console
 
+      window.originalCtx = pxl._originalCanvas.getContext('2d');
+      window.selectorCtx = pxl._selectorContext;
+
       pxl.
           on('select:start', function(x, y) {
             console.log('select started at: ' + x + ':' + y);

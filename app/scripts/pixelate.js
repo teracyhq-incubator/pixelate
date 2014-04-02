@@ -53,7 +53,7 @@
  * on('select:move', fn(selectedArea))
  * on('select:resize', fn(selectedArea))
  * on('select:clear', fn(selectedArea))
- * on('mask', fn(selectedArea))
+ * on('mask', fn(radius, selectedArea))
  * on('unmask', fn(selectedArea))
  * on('pixelate', fn(pixelatedCanvas))
  * on('dispose', fn())
@@ -123,11 +123,6 @@ var pixelate = (function(window, $, _, Backbone, undefined) {
         this._masked = true;
       }
 
-      // pixelated, not smoothing
-      selectorContext.mozImageSmoothingEnabled = false;
-      selectorContext.webkitImageSmoothingEnabled = false;
-      selectorContext.imageSmoothingEnabled = false;
-
       selectorContext.fillStyle = this.options.selector.fillStyle;
       selectorContext.lineWidth = this.options.selector.lineWidth;
       selectorContext.strokeStyle = this.options.selector.strokeStyle;
@@ -143,6 +138,9 @@ var pixelate = (function(window, $, _, Backbone, undefined) {
           addClass('pixelate-selector').
           width(this._$originalCanvas.width()).
           height(this._$originalCanvas.height());
+
+      selectorCanvas.width = this._$originalCanvas.width();
+      selectorCanvas.height = this._$originalCanvas.height();
 
       this._$originalCanvas.after($selectorCanvas);
     },
@@ -167,6 +165,8 @@ var pixelate = (function(window, $, _, Backbone, undefined) {
         this.mask();
       }
 
+      return this;
+
     },
     /**
      * Clears the selected area.
@@ -174,9 +174,11 @@ var pixelate = (function(window, $, _, Backbone, undefined) {
      * trigger 'select:clear' event with SelectedArea argument.
      */
     clear: function() {
-      var selectedArea = this.getSelectedArea();
-      //TODO: remove masked selected area
+      var sltArea = this.getSelectedArea();
+      this._selectorContext.clearRect(sltArea.x, sltArea.y, sltArea.width, sltArea.height);
       this.trigger('select:clear', _.clone(selectedArea));
+
+      return this;
     },
     /**
      * Gets the selected area
@@ -188,10 +190,38 @@ var pixelate = (function(window, $, _, Backbone, undefined) {
     },
     /**
      * Masks the selected area with pixelation.
+     *
+     * - Creates pixelated canvas from current canvas
+     * - Extracts pixelated portion specified by selectedArea
+     * - Puts that extracted image data to selector canvas
+     *
+     * @param radius optional radius option, if not specified, global option is used.
      */
-    mask: function() {
-      //TODO: implement this
+    mask: function(radius) {
+      var pixelatedCanvas = document.createElement('canvas'),
+          pixelatedContext = pixelatedCanvas.getContext('2d'),
+          sltArea = this.getSelectedArea(),
+          pixelatedRatio = (radius || this.options.radius) / 100,
+          currentCanvas = this.getCurrentCanvas(),
+          //imgData = this.getCurrentCanvasContext().getImageData(0, 0, this.getCurrentCanvas().width, this.getCurrentCanvas().height),
+          pixelatedWidth = currentCanvas.width * pixelatedRatio,
+          pixelatedHeight = currentCanvas.height * pixelatedRatio;
+
+      // pixelated, not smoothing
+      pixelatedContext.mozImageSmoothingEnabled = false;
+      pixelatedContext.webkitImageSmoothingEnabled = false;
+      pixelatedContext.imageSmoothingEnabled = false;
+
+      pixelatedContext.drawImage(this.getCurrentCanvas(), 0, 0, pixelatedWidth, pixelatedHeight);
+      pixelatedContext.drawImage(pixelatedCanvas, 0, 0, pixelatedWidth, pixelatedHeight,
+          0, 0, currentCanvas.width, currentCanvas.height);
+
+      var pixelatedImgData = pixelatedContext.getImageData(sltArea.x, sltArea.y, sltArea.width, sltArea.height);
+
+      this._selectorContext.putImageData(pixelatedImgData, sltArea.x, sltArea.y);
+
       this.trigger('mask', _.clone(this.getSelectedArea()));
+      return this;
     },
     /**
      * Unmasks the selected area, the area becomes transparent to reveal selected original
@@ -200,6 +230,7 @@ var pixelate = (function(window, $, _, Backbone, undefined) {
     unmask: function() {
       //TODO: implement this
       this.trigger('unmask', _.clone(this.getSelectedArea()));
+      return this;
     },
     /**
      * Checks to see if the selected area is masked or not.
@@ -236,13 +267,13 @@ var pixelate = (function(window, $, _, Backbone, undefined) {
       this.initUISelector();
     },
     /**
-     * Pixelates the selected area on the canvas
+     * Pixelates the selected area on the canvas.
      *
-     * @param radius optional radius option, if not specified, global option is used.
      */
-    pixelate: function(radius) {
+    pixelate: function() {
       //TODO: implement this
       this.trigger('pixelate', this.getCurrentCanvas());
+      return this;
     },
     /**
      * Gets the original canvas specified when being initialized.
@@ -257,12 +288,21 @@ var pixelate = (function(window, $, _, Backbone, undefined) {
       return this._currentCanvas;
     },
     /**
+     * Gets current canvas context.
+     *
+     * @returns {Object|CanvasRenderingContext2D}
+     */
+    getCurrentCanvasContext: function() {
+      return this.getCurrentCanvas().getContext('2d');
+    },
+    /**
      * Unregisters this instance to specified canvas on initialize and dispose this instance.
      * This is useful to enable, disable pixelate functionality on the specified canvas.
      */
     dispose: function() {
       //TODO: implement this
       this.trigger('dispose');
+      return this;
     }
 
   });

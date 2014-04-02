@@ -255,7 +255,7 @@ var pixelate = (function(window, $, _, Backbone, undefined) {
       var pixelatedImgData = pixelatedContext.getImageData(sltArea.x, sltArea.y, sltArea.width, sltArea.height);
 
       this._selectorContext.putImageData(pixelatedImgData, sltArea.x, sltArea.y);
-
+      this._masked = true;
       this.trigger('mask', radius, sltArea);
       return this;
     },

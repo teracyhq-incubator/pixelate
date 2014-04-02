@@ -19,7 +19,7 @@
         debug: true
       }); //export pxl to test on console
 
-      window.originalCtx = pxl._originalCanvas.getContext('2d');
+      window.originalCtx = pxl.originalCanvas.getContext('2d');
       window.selectorCtx = pxl._selectorContext;
 
       pxl.

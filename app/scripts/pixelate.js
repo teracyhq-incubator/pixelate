@@ -30,6 +30,7 @@
  * mask
  * unmask
  * pixelate
+ * move(offsetX, offsetY) //offset from x and y of the selected area
  * getOriginalCanvas
  * getCurrentCanvas
  * dispose
@@ -42,7 +43,6 @@
  * getCanvasList
  *
  * TODO(hoatle): nice to have:
- * move(offsetX, offsetY) //offset from x and y of the selected area
  * resize(direction, value)
  *
  * Event triggers:
@@ -56,6 +56,7 @@
  * on('mask', fn(radius, selectedArea))
  * on('unmask', fn(selectedArea))
  * on('pixelate', fn(pixelatedCanvas))
+ * on('move', fn(offsetX, offsetY))
  * on('dispose', fn())
  *
  * @since 2014-04-01
@@ -159,13 +160,17 @@ var pixelate = (function(window, $, _, Backbone, undefined) {
      * @param height the height of the selected area
      */
     select: function(x, y, width, height) {
+      x = x || 0;
+      y = y || 0;
+      width = (this._originalCanvas.width > (x + width)) ? width : this._originalCanvas.width - width;
+      height = (this._originalCanvas.height > (y + height)) ? height : this._originalCanvas.height - height;
 
       this.clear();
       this.trigger('select:start', x, y);
 
       this._selectedArea = selectedArea(x, y, width, height);
 
-      this.trigger('select:stop', (x + width), (y + height), _.clone(this.getSelectedArea()));
+      this.trigger('select:stop', (x + width), (y + height), this.getSelectedArea());
 
       if (this.isMasked()) {
         this.mask(this.options.radius);
@@ -173,6 +178,20 @@ var pixelate = (function(window, $, _, Backbone, undefined) {
 
       return this;
 
+    },
+    /**
+     * Moves the selected area with offsetX and offsetY
+     *
+     * @param offsetX
+     * @param offsetY
+     */
+    move: function(offsetX, offsetY) {
+      offsetX = offsetX || 0;
+      offsetY = offsetY || 0;
+      var sltArea = this.getSelectedArea();
+      this.select(sltArea.x + offsetX, sltArea.y + offsetY, sltArea.width, sltArea.height);
+      this.trigger('move', offsetX, offsetY);
+      return this;
     },
     /**
      * Clears the selected area.
@@ -205,14 +224,17 @@ var pixelate = (function(window, $, _, Backbone, undefined) {
      */
     mask: function(radius) {
       radius = radius || this.options.radius;
+      //TODO(hoatle): reuse pixelatedCavas
       var pixelatedCanvas = document.createElement('canvas'),
           pixelatedContext = pixelatedCanvas.getContext('2d'),
           sltArea = this.getSelectedArea(),
           pixelatedRatio = radius / 100,
           currentCanvas = this.getCurrentCanvas(),
-          //imgData = this.getCurrentCanvasContext().getImageData(0, 0, this.getCurrentCanvas().width, this.getCurrentCanvas().height),
           pixelatedWidth = currentCanvas.width * pixelatedRatio,
           pixelatedHeight = currentCanvas.height * pixelatedRatio;
+
+      pixelatedCanvas.width = currentCanvas.width;
+      pixelatedCanvas.height = currentCanvas.height;
 
       // pixelated, not smoothing
       pixelatedContext.mozImageSmoothingEnabled = false;
@@ -222,6 +244,15 @@ var pixelate = (function(window, $, _, Backbone, undefined) {
       pixelatedContext.drawImage(this.getCurrentCanvas(), 0, 0, pixelatedWidth, pixelatedHeight);
       pixelatedContext.drawImage(pixelatedCanvas, 0, 0, pixelatedWidth, pixelatedHeight,
           0, 0, currentCanvas.width, currentCanvas.height);
+
+      //debugging
+      var debugCanvas = document.getElementById('debug-canvas'),
+          debugCanvasContext = debugCanvas.getContext('2d');
+
+      debugCanvas.width = currentCanvas.width;
+      debugCanvas.height = currentCanvas.height;
+      debugCanvasContext.drawImage(pixelatedCanvas, 0, 0);
+
 
       var pixelatedImgData = pixelatedContext.getImageData(sltArea.x, sltArea.y, sltArea.width, sltArea.height);
 

@@ -162,7 +162,7 @@ var pixelate = (function(window, $, _, Backbone, undefined) {
       this.trigger('select:stop', (x + width), (y + height), _.clone(this.getSelectedArea()));
 
       if (this.isMasked()) {
-        this.mask();
+        this.mask(this.options.radius);
       }
 
       return this;
@@ -231,6 +231,7 @@ var pixelate = (function(window, $, _, Backbone, undefined) {
     unmask: function() {
       var sltArea = this.getSelectedArea();
       this._selectorContext.clearRect(sltArea.x, sltArea.y, sltArea.width, sltArea.height);
+      this._masked = false;
       this.trigger('unmask', sltArea);
       return this;
     },

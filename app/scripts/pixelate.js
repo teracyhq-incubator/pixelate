@@ -328,12 +328,9 @@
         debugCanvas.height = currentCanvas.height;
         debugCanvasContext.drawImage(this._pixelatedCanvas, 0, 0);
       }
-
-      //FIXME: Uncaught IndexSizeError: Index or size was negative, or greater than the allowed value.
-      sa.x = sa.x + 1 < 0 ? -1 : sa.x;
-      sa.y = sa.y + 1 < 0 ? -1 : sa.y;
-      sa.w = sa.w - 1 < 0 ? sa.w = 1 : sa.w;
-      sa.h = sa.h - 1 < 0 ? sa.h = 1 : sa.h;
+ 
+      sa.w = sa.w - 1 <= 0 ? sa.w = 2 : sa.w;
+      sa.h = sa.h - 1 <= 0 ? sa.h = 2 : sa.h;
 
       var pixelatedImgData = this._pixelatedContext.getImageData(sa.x + 1, sa.y + 1, sa.w - 1, sa.h - 1);
 
@@ -484,7 +481,8 @@
               var x = t.mouse.startX > t.mouse.endX ? t.mouse.endX : t.mouse.startX,
                   y = t.mouse.startY > t.mouse.endY ? t.mouse.endY : t.mouse.startY,
                   width = Math.abs(t.mouse.startX - t.mouse.endX),
-                  height= Math.abs(t.mouse.startY - t.mouse.endY);
+                  height = Math.abs(t.mouse.startY - t.mouse.endY);
+
               t.createSelectedArea(x, y, width, height);
             } else {
               t._moveSelectedArea();
@@ -562,36 +560,41 @@
         x = sa.x;
         w = this.mouse.endX - sa.x;
       }
+
       this.createSelectedArea(x, sa.y, w, sa.h);
     },
     resizeRight: function () {
       var sa = this._selectedArea;
 
       var w = this.mouse.endX - sa.x;
-
       if (w <= 0) {
         w = sa.x + sa.w - this.mouse.endX;
+        sa.x = this.mouse.endX;
       }
 
       this.createSelectedArea(sa.x, sa.y, w, sa.h);
-
     },
     resizeTop: function () {
       var sa = this._selectedArea;
+
       var h = sa.h + sa.y - this.mouse.endY;
       var y = this.mouse.endY;
+
       if (h <= 0) {
         y = sa.y;
         h = this.mouse.endY - sa.y;
       }
+
       this.createSelectedArea(sa.x, y, sa.w, h);
     },
     resizeBottom: function () {
       var sa = this._selectedArea;
 
       var h = this.mouse.endY - sa.y;
+
       if (h <= 0) {
         h = sa.h + sa.y - this.mouse.endY;
+        sa.y = this.mouse.endY;
       }
 
       this.createSelectedArea(sa.x, sa.y, sa.w, h);

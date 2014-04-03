@@ -400,6 +400,8 @@
 
     initUISelector: function () {
 
+      this.enabled = true;
+
       this.storage = {
         mouseOn: '',
         resizeAt: '',
@@ -421,6 +423,9 @@
           mouseOn = this.storage.mouseOn;
 
       this._selectorCanvas.addEventListener('mousedown', function (e) {
+        if (!t.enabled) {
+          return;
+        }
         mouseCurrent = 'down';
         var sa = t._selectedArea,
             mousePos = t._getMousePos(e);
@@ -448,6 +453,10 @@
       });
 
       this._selectorCanvas.addEventListener('mouseup', function (e) {
+        if (!t.enabled) {
+          return;
+        }
+
         t.trigger('select:stop', t.mouse.endX, t.mouse.endY,
             t.getSelectedArea());
         mouseCurrent = 'up';
@@ -457,6 +466,10 @@
       var sa, mousePos;
 
       this._selectorCanvas.addEventListener('mousemove', function (e) {
+        if (!t.enabled) {
+          return;
+        }
+
         mousePos = t._getMousePos(e);
         sa = t._selectedArea;
         t.handleMouseCurrent();
@@ -608,6 +621,12 @@
         this.resizeRight();
         this.resizeBottom();
       }
+    },
+    enable: function () {
+      this.enabled = true;
+    },
+    disable: function () {
+      this.enabled = false;
     },
     _moveSelectedArea: function () {
       var x = this.mouse.endX - Math.floor(this._selectedArea.w / 2),

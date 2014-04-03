@@ -98,13 +98,13 @@
     return {
       x: x,
       y: y,
-      width: width,
-      height: height,
+      w: width,
+      h: height,
       isEmpty: function () {
-        return x === 0 && y === 0 && width === 0 && height === 0;
+        return (x <= 0 && y <= 0 && width <= 0 && height <= 0);
       },
       isValid: function () {
-        return x && x >= 0 && y && y >= 0 && width && width >= 0 && height && height >= 0;
+        return (x !== undefined && y !== undefined && width !== undefined && height !== undefined);
       }
     };
   };
@@ -150,13 +150,15 @@
      *
      */
     pixelate: function () {
-      //TODO: implement this
+      var sa = this.getSelectedArea();
+      var pixelatedImgData = this._pixelatedContext.getImageData(sa.x + 1, sa.y + 1, sa.w - 1, sa.h - 1);
+      this._currentCanvasContext.putImageData(pixelatedImgData, sa.x, sa.y);
+      this.clear();
       this.trigger('pixelate', this.currentCanvas);
       return this;
     },
     /**
-     * Unregisters this instance to specified canvas on initialize and dispose this instance.
-     * This is useful to enable, disable pixelate functionality on the specified canvas.
+     * Rollbacks pixelate functionality on the specified canvas.
      */
     dispose: function () {
       //TODO: implement this
@@ -253,8 +255,8 @@
     move: function (offsetX, offsetY) {
       offsetX = offsetX || 0;
       offsetY = offsetY || 0;
-      var sltArea = this.getSelectedArea();
-      this.createSelectedArea(sltArea.x + offsetX, sltArea.y + offsetY, sltArea.width, sltArea.height);
+      var se = this.getSelectedArea();
+      this.createSelectedArea(se.x + offsetX, se.y + offsetY, se.w, se.h);
       if (this.isMasked()) {
         this.pixelateSelectedArea();
       }
@@ -267,12 +269,12 @@
      * trigger 'select:clear' event with SelectedArea argument.
      */
     clear: function () {
-      var sltArea = this.getSelectedArea();
+      var se = this.getSelectedArea();
       this.clearSelectedArea();
       if (this.isMasked()) {
         this.clearPixelatedSelectedArea();
       }
-      this.trigger('select:clear', sltArea);
+      this.trigger('select:clear', se);
       return this;
     },
     createSelectedArea: function (x, y, width, height) {
@@ -284,7 +286,7 @@
 
       this._selectorContext.beginPath();
       this._selectorContext.setLineDash([5, 2]);
-      this._selectorContext.rect(sa.x, sa.y, sa.width, sa.height);
+      this._selectorContext.rect(sa.x, sa.y, sa.w, sa.h);
       this._selectorContext.stroke();
 
       this._selectedArea = sa;
@@ -292,8 +294,8 @@
     clearSelectedArea: function () {
       var x = this._selectedArea.x,
           y = this._selectedArea.y,
-          width = this._selectedArea.width,
-          height = this._selectedArea.height;
+          width = this._selectedArea.w,
+          height = this._selectedArea.h;
 
       this._selectorContext.clearRect(x - 1, y - 1, width + 2, height + 2);
       this._selectedArea = selectedArea.EMPTY;
@@ -302,8 +304,13 @@
     pixelateSelectedArea: function (radius) {
       radius = radius || this.options.radius;
 
-      var sa = this.getSelectedArea(),
-          pixelatedRatio = radius / 100,
+      var sa = this.getSelectedArea();
+
+      if (!sa.isValid() || sa.isEmpty()) {
+        return;
+      }
+
+      var pixelatedRatio = radius / 100,
           currentCanvas = this.currentCanvas,
           pixelatedWidth = currentCanvas.width * pixelatedRatio,
           pixelatedHeight = currentCanvas.height * pixelatedRatio;
@@ -322,15 +329,15 @@
         debugCanvasContext.drawImage(this._pixelatedCanvas, 0, 0);
       }
 
-      var pixelatedImgData = this._pixelatedContext.getImageData(sa.x + 1, sa.y + 1, sa.width - 1, sa.height - 1);
+      var pixelatedImgData = this._pixelatedContext.getImageData(sa.x + 1, sa.y + 1, sa.w - 1, sa.h - 1);
 
       this._selectorContext.putImageData(pixelatedImgData, sa.x, sa.y);
     },
     clearPixelatedSelectedArea: function () {
       var x = this._selectedArea.x,
           y = this._selectedArea.y,
-          width = this._selectedArea.width,
-          height = this._selectedArea.height;
+          width = this._selectedArea.w,
+          height = this._selectedArea.h;
 
       this._selectorContext.clearRect(x + 1, y + 1, width - 1, height - 1);
     },
@@ -352,10 +359,7 @@
      * @param radius optional radius option, if not specified, global option is used.
      */
     mask: function (radius) {
-      if (this._masked) {
-        return this;
-      }
-      this.pixelateSelectedArea();
+      this.pixelateSelectedArea(radius);
       this._masked = true;
       this.trigger('mask', radius, this.getSelectedArea());
       return this;
@@ -368,10 +372,10 @@
       if (!this.isMasked()) {
         return this;
       }
-      var sltArea = this.getSelectedArea();
+      var se = this.getSelectedArea();
       this.clearPixelatedSelectedArea();
       this._masked = false;
-      this.trigger('unmask', sltArea);
+      this.trigger('unmask', se);
       return this;
     },
     /**
@@ -387,27 +391,22 @@
 
   //ui selector
   _.extend(Pixelate.prototype, {
-    mouse: '',
-    pixelateCanvas: '',
-    pixelateContext: '',
-    selectedArea: 0,
-    storage: {
-      mouseOn: '',
-      resizeAt: '',
-      border: 4,
-    },
+
     initUISelector: function () {
-      this._selectorContext.mozImageSmoothingEnabled = false;
-      this._selectorContext.webkitImageSmoothingEnabled = false;
-      this._selectorContext.imageSmoothingEnabled = false;
-      this._selectorContext.lineWidth = "1";
+
+      this.storage = {
+        mouseOn: '',
+        resizeAt: '',
+        border: 4
+      };
 
       this.mouse = {
-        start_x: 0,
-        start_y: 0,
-        end_x: 0,
-        end_y: 0
+        startX: 0,
+        startY: 0,
+        endX: 0,
+        endY: 0
       };
+
       var t = this,
           holdId = 0,
           choosingSelectArea = false,
@@ -417,24 +416,24 @@
 
       this._selectorCanvas.addEventListener('mousedown', function (e) {
         mouseCurrent = 'down';
-        var ps = t._selectedArea,
-            mousePos = t.getMousePos(e);
+        var sa = t._selectedArea,
+            mousePos = t._getMousePos(e);
 
-        // in select area
-        if ((mousePos.x >= ps.x && mousePos.x <= ps.x + ps.w) &&
-            (mousePos.y >= ps.y && mousePos.y <= ps.y + ps.h)) {
+        // in selected area
+        if ((mousePos.x >= sa.x && mousePos.x <= sa.x + sa.w) &&
+            (mousePos.y >= sa.y && mousePos.y <= sa.y + sa.h)) {
           choosingSelectArea = true;
         } else {
           choosingSelectArea = false;
-          if (t.storage.resizeAt == '') {
+          if (t.storage.resizeAt === '') {
             t.clearSelectedArea();
           }
         }
 
-        t.setMouseStart(mousePos);
+        t._setMouseStart(mousePos);
         t.trigger('select:start', mousePos.x, mousePos.y);
         var holdTime = 100;
-        if (t.storage.resizeAt != '') {
+        if (t.storage.resizeAt !== '') {
           holdTime = 30;
         }
         holdId = setTimeout(function () {
@@ -443,67 +442,70 @@
       });
 
       this._selectorCanvas.addEventListener('mouseup', function (e) {
-        t.trigger('select:stop', t.mouse.end_x, t.mouse.end_y,
-            t._selectedArea);
-        t.trigger('select:none');
+        t.trigger('select:stop', t.mouse.endX, t.mouse.endY,
+            t.getSelectedArea());
         mouseCurrent = 'up';
         clearTimeout(holdId);
       });
-      var ps, mousePos;
-      this._selectorCanvas.addEventListener('mousemove', function (e) {
-        mousePos = t.getMousePos(e);
-        ps = t._selectedArea;
 
-        if (mouseCurrent == 'hold') {
-          t.setMouseEnd(mousePos);
-          if (t.storage.resizeAt != '') {
-            t.trigger('select:resize', ps);
-            t.resizeSelectArea();
+      var sa, mousePos;
+
+      this._selectorCanvas.addEventListener('mousemove', function (e) {
+        mousePos = t._getMousePos(e);
+        sa = t._selectedArea;
+        t.handleMouseCurrent();
+
+        if (mouseCurrent === 'hold') {
+          t._setMouseEnd(mousePos);
+          if (t.storage.resizeAt !== '') {
+            t.resizeSelectedArea();
           } else {
             if (!choosingSelectArea) {
-              t.trigger('select', ps.x, ps.y, ps.w, ps.h);
-              t.createSelectArea();
+              //t.trigger('select', sa.x, sa.y, sa.w, sa.h);
+              var x = t.mouse.startX > t.mouse.endX ? t.mouse.endX : t.mouse.startX,
+                  y = t.mouse.startY > t.mouse.endY ? t.mouse.endY : t.mouse.startY,
+                  width = Math.abs(t.mouse.startX - t.mouse.endX),
+                  height= Math.abs(t.mouse.startY - t.mouse.endY);
+              t.createSelectedArea(x, y, width, height);
             } else {
-              t.trigger('select:move', ps);
-              t.moveSelectArea();
+              t._moveSelectedArea();
             }
           }
           if (t.isMasked()) {
             t.pixelateSelectedArea(t.options.radius);
           }
         } else {
-          if (ps.w != 0) {
-            t.handleMouseCurrent();
-            if ((mousePos.x < ps.x + border &&
-                mousePos.x > ps.x - border)) {
-              if ((mousePos.y < ps.y + border &&
-                  mousePos.y > ps.y - border)) {
+          if (sa.w != 0) {
+            if ((mousePos.x < sa.x + border &&
+                mousePos.x > sa.x - border)) {
+              if ((mousePos.y < sa.y + border &&
+                  mousePos.y > sa.y - border)) {
                 mouseOn = 'topLeft';
-              } else if ((mousePos.y < ps.y + ps.h + border &&
-                  mousePos.y > ps.y + ps.h - border)) {
+              } else if ((mousePos.y < sa.y + sa.h + border &&
+                  mousePos.y > sa.y + sa.h - border)) {
                 mouseOn = 'bottomLeft';
               } else {
                 mouseOn = 'left';
               }
-            } else if ((mousePos.x < ps.x + ps.w + border &&
-                mousePos.x > ps.x + ps.w - border)) {
-              if ((mousePos.y < ps.y + border &&
-                  mousePos.y > ps.y - border)) {
+            } else if ((mousePos.x < sa.x + sa.w + border &&
+                mousePos.x > sa.x + sa.w - border)) {
+              if ((mousePos.y < sa.y + border &&
+                  mousePos.y > sa.y - border)) {
                 mouseOn = 'topRight';
-              } else if ((mousePos.y < ps.y + ps.h + border &&
-                  mousePos.y > ps.y + ps.h - border)) {
+              } else if ((mousePos.y < sa.y + sa.h + border &&
+                  mousePos.y > sa.y + sa.h - border)) {
                 mouseOn = 'bottomRight';
               } else {
                 mouseOn = 'right';
               }
-            } else if ((mousePos.y < ps.y + border &&
-                mousePos.y > ps.y - border)) {
+            } else if ((mousePos.y < sa.y + border &&
+                mousePos.y > sa.y - border)) {
               mouseOn = 'top';
-            } else if ((mousePos.y < ps.y + ps.h + border &&
-                mousePos.y > ps.y + ps.h - border)) {
+            } else if ((mousePos.y < sa.y + sa.h + border &&
+                mousePos.y > sa.y + sa.h - border)) {
               mouseOn = 'bottom';
-            } else if ((mousePos.x > ps.x && mousePos.x < ps.x + ps.w) &&
-                (mousePos.y > ps.y && mousePos.y < ps.y + ps.h)) {
+            } else if ((mousePos.x > sa.x && mousePos.x < sa.x + sa.w) &&
+                (mousePos.y > sa.y && mousePos.y < sa.y + sa.h)) {
               mouseOn = 'center';
             } else {
               mouseOn = '';
@@ -512,10 +514,6 @@
           }
         }
       });
-    },
-    updateCanvasSize: function () {
-      this._selectorCanvas.width = this._originalCanvas.width;
-      this._selectorCanvas.height = this._originalCanvas.height;
     },
     handleMouseCurrent: function () {
       var mouseOn = this.storage.mouseOn;
@@ -532,63 +530,56 @@
         this._selectorCanvas.style.cursor = 'move';
         this.storage.resizeAt = '';
       } else {
-        this._selectorCanvas.style.cursor = 'auto';
+        this._selectorCanvas.style.cursor = 'crosshair';
         this.storage.resizeAt = '';
       }
     },
     resizeLeft: function () {
-      var ps = this._selectedArea;
+      var sa = this._selectedArea;
 
-      var w = ps.x + ps.w - this.mouse.end_x;
-      var x = this.mouse.end_x;
+      var w = sa.x + sa.w - this.mouse.endX;
+      var x = this.mouse.endX;
       if (w <= 0) {
-        x = ps.x;
-        w = this.mouse.end_x - ps.x;
+        x = sa.x;
+        w = this.mouse.endX - sa.x;
       }
-
-      this._selectedArea.x = x;
-      this._selectedArea.w = w;
+      this.createSelectedArea(x, sa.y, w, sa.h);
     },
     resizeRight: function () {
-      var ps = this._selectedArea;
+      var sa = this._selectedArea;
 
-      var w = this.mouse.end_x - ps.x;
+      var w = this.mouse.endX - sa.x;
 
       if (w <= 0) {
-        w = ps.x + ps.w - this.mouse.end_x;
-        this._selectedArea.x = this.mouse.end_x;
+        w = sa.x + sa.w - this.mouse.endX;
       }
 
-      this._selectedArea.w = w;
+      this.createSelectedArea(sa.x, sa.y, w, sa.h);
+
     },
     resizeTop: function () {
-      var ps = this._selectedArea;
-
-      var h = ps.h + ps.y - this.mouse.end_y;
-      var y = this.mouse.end_y;
+      var sa = this._selectedArea;
+      var h = sa.h + sa.y - this.mouse.endY;
+      var y = this.mouse.endY;
       if (h <= 0) {
-        y = ps.y;
-        h = this.mouse.end_y - ps.y;
+        y = sa.y;
+        h = this.mouse.endY - sa.y;
       }
-
-      this._selectedArea.y = y;
-      this._selectedArea.h = h;
+      this.createSelectedArea(sa.x, y, sa.w, h);
     },
     resizeBottom: function () {
-      var ps = this._selectedArea;
+      var sa = this._selectedArea;
 
-      var h = this.mouse.end_y - ps.y;
+      var h = this.mouse.endY - sa.y;
       if (h <= 0) {
-        h = ps.h + ps.y - this.mouse.end_y;
-        this._selectedArea.y = this.mouse.end_y;
+        h = sa.h + sa.y - this.mouse.endY;
       }
 
-      this._selectedArea.h = h;
-    },
-    resizeSelectArea: function () {
-      var resizeAt = this.storage.resizeAt;
+      this.createSelectedArea(sa.x, sa.y, sa.w, h);
 
-      this.clearSelectedArea();
+    },
+    resizeSelectedArea: function () {
+      var resizeAt = this.storage.resizeAt;
 
       if (resizeAt == 'bottom') {
         this.resizeBottom();
@@ -611,44 +602,36 @@
         this.resizeRight();
         this.resizeBottom();
       }
-
-      this.createSelectedArea();
     },
-    createSelectArea: function () {
-      this.clearSelectedArea();
-      this._selectedArea = selectedArea(this.mouse.start_x, this.mouse.start_y,
-          this.mouse.end_x - this.mouse.start_x, this.mouse.end_y - this.mouse.start_y);
-      this.createSelectedArea();
+    _moveSelectedArea: function () {
+      var x = this.mouse.endX - Math.floor(this._selectedArea.w / 2),
+          y = this.mouse.endY - Math.floor(this._selectedArea.h / 2);
+      this.createSelectedArea(x, y, this._selectedArea.w, this._selectedArea.h);
+      //FIXME: trigger 'move'
     },
-    moveSelectArea: function () {
-      this.clearSelectedArea();
-      this._selectedArea.x = this.mouse.end_x - Math.floor(this._selectedArea.w / 2);
-      this._selectedArea.y = this.mouse.end_y - Math.floor(this._selectedArea.h / 2);
-      this.createSelectedArea();
-    },
-    getMousePos: function (e) {
+    _getMousePos: function (e) {
       var rect = this._selectorCanvas.getBoundingClientRect();
       return {
         x: e.clientX - rect.left,
         y: e.clientY - rect.top
       };
     },
-    setMouseStart: function (mouse) {
-      this.mouse.start_x = mouse.x;
-      this.mouse.start_y = mouse.y;
+    _setMouseStart: function (mouse) {
+      this.mouse.startX = mouse.x;
+      this.mouse.startY = mouse.y;
     },
-    setMouseEnd: function (mouse) {
-      this.mouse.end_x = mouse.x;
-      this.mouse.end_y = mouse.y;
+    _setMouseEnd: function (mouse) {
+      this.mouse.endX = mouse.x;
+      this.mouse.endY = mouse.y;
     },
     disposeUISelector: function () {
       var canv = document.createElement('canvas');
       var cxt = canv.getContext('2d');
-      canv.width = this._originalCanvas.width;
-      canv.height = this._originalCanvas.height;
+      canv.width = this.originalCanvas.width;
+      canv.height = this.originalCanvas.height;
 
-      cxt.drawImage(this._originalCanvas, 0, 0, canv.width, canv.height);
-      this._currentCanvas.getContext('2d').drawImage(canv, 0, 0);
+      cxt.drawImage(this.originalCanvas, 0, 0, canv.width, canv.height);
+      this._currentCanvasContext.drawImage(canv, 0, 0);
       canv.remove();
     }
   });

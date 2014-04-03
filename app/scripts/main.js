@@ -32,6 +32,9 @@
           on('select:clear', function(selectedArea) {
             console.log('select cleared', selectedArea);
           }).
+          on('move', function(offsetX, offsetY) {
+            console.log('moved ' + offsetX + ':' + offsetY);
+          }).
           on('mask', function(radius, selectedArea) {
             console.log('masked with radius: ' + radius + ' and selectedArea: ', selectedArea);
           }).

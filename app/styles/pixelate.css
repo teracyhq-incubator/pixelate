@@ -19,7 +19,6 @@
   image-rendering: -o-crisp-edges;
   image-rendering: crisp-edges;
   -ms-interpolation-mode: nearest-neighbor;
-  border: 1px solid #000; /** for debugging **/
   position: absolute;
   top: 0;
   left: 0;

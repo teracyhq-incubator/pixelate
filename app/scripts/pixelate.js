@@ -624,9 +624,12 @@
     },
     enable: function () {
       this.enabled = true;
+      this._selectorCanvas.style.cursor = 'crosshair';
     },
     disable: function () {
+      this.clear();
       this.enabled = false;
+      this._selectorCanvas.style.cursor = 'auto';
     },
     _moveSelectedArea: function () {
       var x = this.mouse.endX - Math.floor(this._selectedArea.w / 2),

@@ -631,14 +631,7 @@
       this.mouse.endY = mouse.y;
     },
     disposeUISelector: function () {
-      var canv = document.createElement('canvas');
-      var cxt = canv.getContext('2d');
-      canv.width = this.originalCanvas.width;
-      canv.height = this.originalCanvas.height;
 
-      cxt.drawImage(this.originalCanvas, 0, 0, canv.width, canv.height);
-      this._currentCanvasContext.drawImage(canv, 0, 0);
-      canv.remove();
     }
   });
 

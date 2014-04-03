@@ -329,6 +329,12 @@
         debugCanvasContext.drawImage(this._pixelatedCanvas, 0, 0);
       }
 
+      //FIXME: Uncaught IndexSizeError: Index or size was negative, or greater than the allowed value.
+      sa.x = sa.x + 1 < 0 ? -1 : sa.x;
+      sa.y = sa.y + 1 < 0 ? -1 : sa.y;
+      sa.w = sa.w - 1 < 0 ? sa.w = 1 : sa.w;
+      sa.h = sa.h - 1 < 0 ? sa.h = 1 : sa.h;
+
       var pixelatedImgData = this._pixelatedContext.getImageData(sa.x + 1, sa.y + 1, sa.w - 1, sa.h - 1);
 
       this._selectorContext.putImageData(pixelatedImgData, sa.x, sa.y);

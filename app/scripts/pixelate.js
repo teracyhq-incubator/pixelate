@@ -59,6 +59,8 @@
  * on('move', fn(offsetX, offsetY))
  * on('dispose', fn())
  *
+ * @author hoatle
+ * @author datphan
  * @since 2014-04-01
  */
 
@@ -303,6 +305,8 @@
 
     pixelateSelectedArea: function (radius) {
       radius = radius || this.options.radius;
+      // radius must be within 1 - 100
+      radius = radius < 1 ? 1 : (radius > 100 ? 100 : radius);
 
       var sa = this.getSelectedArea();
 
@@ -328,7 +332,7 @@
         debugCanvas.height = currentCanvas.height;
         debugCanvasContext.drawImage(this._pixelatedCanvas, 0, 0);
       }
- 
+
       sa.w = sa.w - 1 <= 0 ? sa.w = 2 : sa.w;
       sa.h = sa.h - 1 <= 0 ? sa.h = 2 : sa.h;
 
@@ -666,3 +670,4 @@
   };
 
 })(window, jQuery, _, Backbone);
+

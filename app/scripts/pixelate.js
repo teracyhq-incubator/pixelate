@@ -317,7 +317,7 @@
 
       this._pixelatedContext.drawImage(this.currentCanvas, 0, 0, pixelatedWidth, pixelatedHeight);
       this._pixelatedContext.drawImage(this._pixelatedCanvas, 0, 0, pixelatedWidth, pixelatedHeight,
-          0, 0, currentCanvas.width, currentCanvas.height);
+          1, 1, currentCanvas.width, currentCanvas.height);
 
       if (this.options.debug) {
         //debugging

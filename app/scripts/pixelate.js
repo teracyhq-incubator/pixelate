@@ -148,6 +148,28 @@
       this.initUISelector();
     },
     /**
+     * Updates new canvas and options to existing ones.
+     *
+     * @param canvas
+     * @param options
+     */
+    update: function(canvas, options) {
+      this.currentCanvas = canvas;
+      this._currentCanvasContext = this.currentCanvas.getContext('2d');
+      _.extend(this.options, options || {});
+
+      //move selected area proportionally before updating selector
+      var sa = this.getSelectedArea(),
+          proportionX = $(canvas).width() / this._selectorCanvas.width,
+          offsetX = $(canvas).width() - this._selectorCanvas.width,
+          proportionY = $(canvas).height() / this._selectorCanvas.height,
+          offsetY = $(canvas).height() - this._selectorCanvas.height;
+
+      this.updateSelector();
+
+      this.select(sa.x + (offsetX / 2) , sa.y + (offsetY / 2), sa.w * proportionX, sa.h * proportionY);
+    },
+    /**
      * Pixelates the selected area on the canvas.
      *
      */
@@ -189,8 +211,8 @@
       this._pixelatedCanvas = document.createElement('canvas');
       this._pixelatedContext = this._pixelatedCanvas.getContext('2d');
 
-      this._pixelatedCanvas.width = this.currentCanvas.width;
-      this._pixelatedCanvas.height = this.currentCanvas.height;
+      this._pixelatedCanvas.width = $(this.currentCanvas).width();
+      this._pixelatedCanvas.height = $(this.currentCanvas).height();
 
       // pixelated, not smoothing
       this._pixelatedContext.mozImageSmoothingEnabled = false;
@@ -209,10 +231,27 @@
 
       this._$selectorCanvas.addClass('pixelate-selector');
 
-      this._selectorCanvas.width = this._$originalCanvas.width();
-      this._selectorCanvas.height = this._$originalCanvas.height();
+      this._selectorCanvas.width = $(this.currentCanvas).width();
+      this._selectorCanvas.height = $(this.currentCanvas).height();
 
       this._$originalCanvas.after(this._$selectorCanvas);
+    },
+    /**
+     * Updates the selector when canvas or options changes
+     */
+    updateSelector: function() {
+      this._masked = this.options.selector.masked;
+
+      this._selectorCanvas.width = $(this.currentCanvas).width();
+      this._selectorCanvas.height = $(this.currentCanvas).height();
+
+      this._pixelatedCanvas.width = $(this.currentCanvas).width();
+      this._pixelatedCanvas.height = $(this.currentCanvas).height();
+
+      // pixelated, not smoothing
+      this._pixelatedContext.mozImageSmoothingEnabled = false;
+      this._pixelatedContext.webkitImageSmoothingEnabled = false;
+      this._pixelatedContext.imageSmoothingEnabled = false;
     },
     /**
      * Disposes this selector (de-init).
@@ -321,15 +360,15 @@
 
       this._pixelatedContext.drawImage(this.currentCanvas, 0, 0, pixelatedWidth, pixelatedHeight);
       this._pixelatedContext.drawImage(this._pixelatedCanvas, 0, 0, pixelatedWidth, pixelatedHeight,
-          1, 1, currentCanvas.width, currentCanvas.height);
+          1, 1, $(currentCanvas).width(), $(currentCanvas).height());
 
       if (this.options.debug) {
         //debugging
         var debugCanvas = document.getElementById('debug-canvas'),
             debugCanvasContext = debugCanvas.getContext('2d');
 
-        debugCanvas.width = currentCanvas.width;
-        debugCanvas.height = currentCanvas.height;
+        debugCanvas.width = $(currentCanvas).width();
+        debugCanvas.height = $(currentCanvas).height();
         debugCanvasContext.drawImage(this._pixelatedCanvas, 0, 0);
       }
 
@@ -453,7 +492,7 @@
         }, holdTime);
       });
 
-      this._selectorCanvas.addEventListener('mouseup', function (e) {
+      this._selectorCanvas.addEventListener('mouseup', function () {
         if (!t.enabled) {
           return;
         }
@@ -496,7 +535,7 @@
             t.pixelateSelectedArea(t.options.radius);
           }
         } else {
-          if (sa.w != 0) {
+          if (sa.w !== 0) {
             if ((mousePos.x < sa.x + border &&
                 mousePos.x > sa.x - border)) {
               if ((mousePos.y < sa.y + border &&
@@ -539,15 +578,15 @@
     handleMouseCurrent: function () {
       var mouseOn = this.storage.mouseOn;
       this.storage.resizeAt = mouseOn;
-      if (mouseOn == 'right' || mouseOn == 'left') {
+      if (mouseOn === 'right' || mouseOn === 'left') {
         this._selectorCanvas.style.cursor = 'ew-resize';
-      } else if (mouseOn == 'top' || mouseOn == 'bottom') {
+      } else if (mouseOn === 'top' || mouseOn === 'bottom') {
         this._selectorCanvas.style.cursor = 'ns-resize';
-      } else if (mouseOn == 'topLeft' || mouseOn == 'bottomRight') {
+      } else if (mouseOn === 'topLeft' || mouseOn === 'bottomRight') {
         this._selectorCanvas.style.cursor = 'nwse-resize';
-      } else if (mouseOn == 'topRight' || mouseOn == 'bottomLeft') {
+      } else if (mouseOn === 'topRight' || mouseOn === 'bottomLeft') {
         this._selectorCanvas.style.cursor = 'nesw-resize';
-      } else if (mouseOn == 'center') {
+      } else if (mouseOn === 'center') {
         this._selectorCanvas.style.cursor = 'move';
         this.storage.resizeAt = '';
       } else {
@@ -607,24 +646,24 @@
     resizeSelectedArea: function () {
       var resizeAt = this.storage.resizeAt;
 
-      if (resizeAt == 'bottom') {
+      if (resizeAt === 'bottom') {
         this.resizeBottom();
-      } else if (resizeAt == 'left') {
+      } else if (resizeAt === 'left') {
         this.resizeLeft();
-      } else if (resizeAt == 'right') {
+      } else if (resizeAt === 'right') {
         this.resizeRight();
-      } else if (resizeAt == 'top') {
+      } else if (resizeAt === 'top') {
         this.resizeTop();
-      } else if (resizeAt == 'topLeft') {
+      } else if (resizeAt === 'topLeft') {
         this.resizeLeft();
         this.resizeTop();
-      } else if (resizeAt == 'bottomLeft') {
+      } else if (resizeAt === 'bottomLeft') {
         this.resizeLeft();
         this.resizeBottom();
-      } else if (resizeAt == 'topRight') {
+      } else if (resizeAt === 'topRight') {
         this.resizeRight();
         this.resizeTop();
-      } else if (resizeAt == 'bottomRight') {
+      } else if (resizeAt === 'bottomRight') {
         this.resizeRight();
         this.resizeBottom();
       }
@@ -670,4 +709,3 @@
   };
 
 })(window, jQuery, _, Backbone);
-

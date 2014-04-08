@@ -10,6 +10,8 @@
       mainCanvas.width = img.width;
       mainCanvas.height = img.height;
       context.drawImage(img, 0, 0);
+      mainCanvas.style.width = (img.width + 100) + 'px';
+      mainCanvas.style.height = (img.height + 100) + 'px';
       initPixelate();
     };
     img.src = '/assets/darth-vader.jpg';

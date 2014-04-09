@@ -66,7 +66,7 @@
 
 // temporary huge dependency on jQuery, _ and Backbone
 // TODO(hoatle): reduce huge dependency
-(function (window, $, _, Backbone, undefined) {
+(function(window, $, _, Backbone, undefined) {
   'use strict';
 
   /**
@@ -91,7 +91,7 @@
    *
    * @returns {x: number, y: number, width: number, height: number, isEmpty: Function, isValid: Function}
    */
-  var selectedArea = function (x, y, width, height) {
+  var selectedArea = function(x, y, width, height) {
     x = x || 0;
     y = y || 0;
     width = width || 0;
@@ -102,10 +102,10 @@
       y: y,
       w: width,
       h: height,
-      isEmpty: function () {
+      isEmpty: function() {
         return (x <= 0 && y <= 0 && width <= 0 && height <= 0);
       },
-      isValid: function () {
+      isValid: function() {
         return (x !== undefined && y !== undefined && width !== undefined && height !== undefined);
       }
     };
@@ -136,13 +136,14 @@
      * @param canvas required specified Canvas element
      * @param options optional object
      */
-    initialize: function (canvas, options) {
+    initialize: function(canvas, options) {
       this.originalCanvas = canvas;
-      this._originalCanvasContext = this.originalCanvas.getContext('2d');
-      this._$originalCanvas = $(this.originalCanvas);
       this.currentCanvas = canvas;
+      this._$currentCanvas = $(this.currentCanvas);
       this._currentCanvasContext = this.currentCanvas.getContext('2d');
       this.options = _.defaults(options || {}, defaultOptions);
+
+      this._redraw();
 
       this.initSelector();
       this.initUISelector();
@@ -154,26 +155,35 @@
      * @param options
      */
     update: function(canvas, options) {
-      this.currentCanvas = canvas;
-      this._currentCanvasContext = this.currentCanvas.getContext('2d');
-      _.extend(this.options, options || {});
-
       //move selected area proportionally before updating selector
       var sa = this.getSelectedArea(),
-          proportionX = $(canvas).width() / this._selectorCanvas.width,
-          offsetX = $(canvas).width() - this._selectorCanvas.width,
-          proportionY = $(canvas).height() / this._selectorCanvas.height,
-          offsetY = $(canvas).height() - this._selectorCanvas.height;
+          styleWidth = $(canvas).width(),
+          canvasWidth = this._selectorCanvas.width,
+          styleHeight = $(canvas).height(),
+          canvasHeight = this._selectorCanvas.height,
+
+          proportionX = styleWidth / canvasWidth,
+          offsetX = styleWidth - canvasWidth,
+          proportionY = styleHeight / canvasHeight,
+          offsetY = styleHeight - canvasHeight;
+
+      this.currentCanvas = canvas;
+      this._currentCanvasContext = this.currentCanvas.getContext('2d');
+
+      //redraw currentCanvas
+      this._redraw();
+
+      _.extend(this.options, options || {});
 
       this.updateSelector();
 
-      this.select(sa.x + (offsetX / 2) , sa.y + (offsetY / 2), sa.w * proportionX, sa.h * proportionY);
+      this.select(sa.x + (offsetX / 2), sa.y + (offsetY / 2), sa.w * proportionX, sa.h * proportionY);
     },
     /**
      * Pixelates the selected area on the canvas.
      *
      */
-    pixelate: function () {
+    pixelate: function() {
       var sa = this.getSelectedArea();
       var pixelatedImgData = this._pixelatedContext.getImageData(sa.x + 1, sa.y + 1, sa.w - 1, sa.h - 1);
       this._currentCanvasContext.putImageData(pixelatedImgData, sa.x, sa.y);
@@ -184,26 +194,63 @@
     /**
      * Rollbacks pixelate functionality on the specified canvas.
      */
-    dispose: function () {
+    dispose: function() {
       //TODO: implement this
       this.disposeUISelector();
       this.disposeSelector();
       this.trigger('dispose');
       return this;
+    },
+
+    _getClonedCanvas: function(oldCanvas) {
+      var newCanvas = document.createElement('canvas'),
+          newContext = newCanvas.getContext('2d');
+
+      newCanvas.width = oldCanvas.width;
+      newCanvas.height = oldCanvas.height;
+
+      $(newCanvas).width($(oldCanvas).width());
+      $(newCanvas).height($(oldCanvas).height());
+
+      newContext.drawImage(oldCanvas, 0, 0);
+
+      return newCanvas;
+    },
+
+    /**
+     * Redraws the current canvas to set its width, height attribute
+     * to style width and height to get pixelate work well.
+     */
+    _redraw: function() {
+
+      var clonedCanvas = this._getClonedCanvas(this.currentCanvas);
+
+      //var newCanvas = $('#debug-canvas').
+      var newCanvas = $('<canvas></canvas>').
+          attr('width', $(clonedCanvas).width()).
+          attr('height', $(clonedCanvas).height())[0],
+          newCanvasContext = newCanvas.getContext('2d');
+
+      newCanvasContext.drawImage(clonedCanvas, 0, 0, clonedCanvas.width, clonedCanvas.height, 0, 0, $(clonedCanvas).width(), $(clonedCanvas).height());
+
+      this.currentCanvas.width = this._$currentCanvas.width();
+      this.currentCanvas.height = this._$currentCanvas.height();
+
+      this._currentCanvasContext.drawImage(newCanvas, 0, 0);
     }
 
   });
 
   //selector
   _.extend(Pixelate.prototype, {
-    initSelector: function () {
+    initSelector: function() {
       this._selectorCanvas = document.createElement('canvas');
       this._$selectorCanvas = $(this._selectorCanvas);
       this._selectorContext = this._selectorCanvas.getContext('2d');
 
       //sharp lines
       this._selectorContext.translate(0.5, 0.5);
-      this._selectorContext.setLineDash = this._selectorContext.setLineDash || function () {
+      this._selectorContext.setLineDash = this._selectorContext.setLineDash || function() {
       };
 
       this._selectorContext.strokeStyle = this.options.selector.strokeStyle;
@@ -226,15 +273,15 @@
       this._selectedArea = selectedArea.EMPTY;
 
       //wrap original canvas to a div with .pixelate-parent
-      this._$originalCanvas.addClass('pixelate-src');
-      this._$originalCanvas.wrap('<div class="pixelate-parent"></div>');
+      this._$currentCanvas.addClass('pixelate-src');
+      this._$currentCanvas.wrap('<div class="pixelate-parent"></div>');
 
       this._$selectorCanvas.addClass('pixelate-selector');
 
       this._selectorCanvas.width = $(this.currentCanvas).width();
       this._selectorCanvas.height = $(this.currentCanvas).height();
 
-      this._$originalCanvas.after(this._$selectorCanvas);
+      this._$currentCanvas.after(this._$selectorCanvas);
     },
     /**
      * Updates the selector when canvas or options changes
@@ -256,7 +303,7 @@
     /**
      * Disposes this selector (de-init).
      */
-    disposeSelector: function () {
+    disposeSelector: function() {
 
     },
     /**
@@ -267,7 +314,7 @@
      * @param width the width of the selected area
      * @param height the height of the selected area
      */
-    select: function (x, y, width, height) {
+    select: function(x, y, width, height) {
       x = x || 0;
       y = y || 0;
       width = (this.originalCanvas.width > (x + width)) ? width : this.originalCanvas.width - width;
@@ -293,7 +340,7 @@
      * @param offsetX
      * @param offsetY
      */
-    move: function (offsetX, offsetY) {
+    move: function(offsetX, offsetY) {
       offsetX = offsetX || 0;
       offsetY = offsetY || 0;
       var se = this.getSelectedArea();
@@ -309,7 +356,7 @@
      *
      * trigger 'select:clear' event with SelectedArea argument.
      */
-    clear: function () {
+    clear: function() {
       var se = this.getSelectedArea();
       this.clearSelectedArea();
       if (this.isMasked()) {
@@ -318,7 +365,7 @@
       this.trigger('select:clear', se);
       return this;
     },
-    createSelectedArea: function (x, y, width, height) {
+    createSelectedArea: function(x, y, width, height) {
       var sa = selectedArea(x, y, width, height);
       if (!sa.isValid() && sa.isEmpty()) {
         return;
@@ -332,7 +379,7 @@
 
       this._selectedArea = sa;
     },
-    clearSelectedArea: function () {
+    clearSelectedArea: function() {
       var x = this._selectedArea.x,
           y = this._selectedArea.y,
           width = this._selectedArea.w,
@@ -342,7 +389,7 @@
       this._selectedArea = selectedArea.EMPTY;
     },
 
-    pixelateSelectedArea: function (radius) {
+    pixelateSelectedArea: function(radius) {
       radius = radius || this.options.radius;
       // radius must be within 1 - 100
       radius = radius < 1 ? 1 : (radius > 100 ? 100 : radius);
@@ -379,7 +426,7 @@
 
       this._selectorContext.putImageData(pixelatedImgData, sa.x, sa.y);
     },
-    clearPixelatedSelectedArea: function () {
+    clearPixelatedSelectedArea: function() {
       var x = this._selectedArea.x,
           y = this._selectedArea.y,
           width = this._selectedArea.w,
@@ -392,7 +439,7 @@
      *
      * @return the selected area
      */
-    getSelectedArea: function () {
+    getSelectedArea: function() {
       return _.clone(this._selectedArea);
     },
     /**
@@ -404,7 +451,7 @@
      *
      * @param radius optional radius option, if not specified, global option is used.
      */
-    mask: function (radius) {
+    mask: function(radius) {
       this.pixelateSelectedArea(radius);
       this._masked = true;
       this.trigger('mask', radius, this.getSelectedArea());
@@ -414,7 +461,7 @@
      * Unmasks the selected area, the area becomes transparent to reveal selected original
      * image part.
      */
-    unmask: function () {
+    unmask: function() {
       if (!this.isMasked()) {
         return this;
       }
@@ -429,7 +476,7 @@
      *
      * @return true or false
      */
-    isMasked: function () {
+    isMasked: function() {
       return this._masked;
     }
   });
@@ -438,7 +485,7 @@
   //ui selector
   _.extend(Pixelate.prototype, {
 
-    initUISelector: function () {
+    initUISelector: function() {
 
       this.enabled = true;
 
@@ -462,7 +509,7 @@
           border = this.storage.border,
           mouseOn = this.storage.mouseOn;
 
-      this._selectorCanvas.addEventListener('mousedown', function (e) {
+      this._selectorCanvas.addEventListener('mousedown', function(e) {
         if (!t.enabled) {
           return;
         }
@@ -487,12 +534,12 @@
         if (t.storage.resizeAt !== '') {
           holdTime = 30;
         }
-        holdId = setTimeout(function () {
+        holdId = setTimeout(function() {
           mouseCurrent = 'hold';
         }, holdTime);
       });
 
-      this._selectorCanvas.addEventListener('mouseup', function () {
+      this._selectorCanvas.addEventListener('mouseup', function() {
         if (!t.enabled) {
           return;
         }
@@ -505,7 +552,7 @@
 
       var sa, mousePos;
 
-      this._selectorCanvas.addEventListener('mousemove', function (e) {
+      this._selectorCanvas.addEventListener('mousemove', function(e) {
         if (!t.enabled) {
           return;
         }
@@ -575,7 +622,7 @@
         }
       });
     },
-    handleMouseCurrent: function () {
+    handleMouseCurrent: function() {
       var mouseOn = this.storage.mouseOn;
       this.storage.resizeAt = mouseOn;
       if (mouseOn === 'right' || mouseOn === 'left') {
@@ -594,7 +641,7 @@
         this.storage.resizeAt = '';
       }
     },
-    resizeLeft: function () {
+    resizeLeft: function() {
       var sa = this._selectedArea;
 
       var w = sa.x + sa.w - this.mouse.endX;
@@ -606,7 +653,7 @@
 
       this.createSelectedArea(x, sa.y, w, sa.h);
     },
-    resizeRight: function () {
+    resizeRight: function() {
       var sa = this._selectedArea;
 
       var w = this.mouse.endX - sa.x;
@@ -617,7 +664,7 @@
 
       this.createSelectedArea(sa.x, sa.y, w, sa.h);
     },
-    resizeTop: function () {
+    resizeTop: function() {
       var sa = this._selectedArea;
 
       var h = sa.h + sa.y - this.mouse.endY;
@@ -630,7 +677,7 @@
 
       this.createSelectedArea(sa.x, y, sa.w, h);
     },
-    resizeBottom: function () {
+    resizeBottom: function() {
       var sa = this._selectedArea;
 
       var h = this.mouse.endY - sa.y;
@@ -643,7 +690,7 @@
       this.createSelectedArea(sa.x, sa.y, sa.w, h);
 
     },
-    resizeSelectedArea: function () {
+    resizeSelectedArea: function() {
       var resizeAt = this.storage.resizeAt;
 
       if (resizeAt === 'bottom') {
@@ -668,43 +715,43 @@
         this.resizeBottom();
       }
     },
-    enable: function () {
+    enable: function() {
       this.enabled = true;
       this._selectorCanvas.style.cursor = 'crosshair';
     },
-    disable: function () {
+    disable: function() {
       this.clear();
       this.enabled = false;
       this._selectorCanvas.style.cursor = 'auto';
     },
-    _moveSelectedArea: function () {
+    _moveSelectedArea: function() {
       var x = this.mouse.endX - Math.floor(this._selectedArea.w / 2),
           y = this.mouse.endY - Math.floor(this._selectedArea.h / 2);
       this.createSelectedArea(x, y, this._selectedArea.w, this._selectedArea.h);
       //FIXME: trigger 'move'
     },
-    _getMousePos: function (e) {
+    _getMousePos: function(e) {
       var rect = this._selectorCanvas.getBoundingClientRect();
       return {
         x: e.clientX - rect.left,
         y: e.clientY - rect.top
       };
     },
-    _setMouseStart: function (mouse) {
+    _setMouseStart: function(mouse) {
       this.mouse.startX = mouse.x;
       this.mouse.startY = mouse.y;
     },
-    _setMouseEnd: function (mouse) {
+    _setMouseEnd: function(mouse) {
       this.mouse.endX = mouse.x;
       this.mouse.endY = mouse.y;
     },
-    disposeUISelector: function () {
+    disposeUISelector: function() {
 
     }
   });
 
   //export
-  window.pixelate = function (canvas, options) {
+  window.pixelate = function(canvas, options) {
     return new Pixelate(canvas, options);
   };
 

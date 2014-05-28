@@ -421,8 +421,9 @@
 
       sa.w = sa.w - 1 <= 0 ? sa.w = 2 : sa.w;
       sa.h = sa.h - 1 <= 0 ? sa.h = 2 : sa.h;
-
-      var pixelatedImgData = this._pixelatedContext.getImageData(sa.x + 1, sa.y + 1, sa.w - 1, sa.h - 1);
+      sa.x += 1; 
+      sa.y += 1;
+      var pixelatedImgData = this._pixelatedContext.getImageData(sa.x, sa.y, sa.w - 1, sa.h - 1);
 
       this._selectorContext.putImageData(pixelatedImgData, sa.x, sa.y);
     },
@@ -432,7 +433,7 @@
           width = this._selectedArea.w,
           height = this._selectedArea.h;
 
-      this._selectorContext.clearRect(x + 1, y + 1, width - 1, height - 1);
+      this._selectorContext.clearRect(x, y, width + 2, height + 2);
     },
     /**
      * Gets the selected area, this is immutable

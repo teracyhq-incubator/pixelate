@@ -4,7 +4,9 @@
   "dependencies": {
     "jquery": "~1.11.0",
     "underscore": "~1.6.0",
-    "backbone": "~1.1.2"
+    "backbone": "~1.1.2",
+    "bootstrap": "~3.0.3",
+    "dropzone": "https://github.com/enyo/dropzone.git"
   },
   "devDependencies": {}
 }

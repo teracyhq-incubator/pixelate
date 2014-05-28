@@ -1,0 +1,324 @@
+<!doctype html>
+<html class="no-js">
+    <head>
+        <meta charset="utf-8">
+        <title>Pilot</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+        <link rel="shortcut icon" href="/favicon.ico">
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+        <!-- build:css styles/vendor.css -->
+        <!-- bower:css -->
+        <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="../bower_components/dropzone/downloads/css/dropzone.css" />
+        <!-- endbower -->
+        <!-- endbuild -->
+        <!-- build:css(.tmp) styles/main.css -->
+        <link rel="stylesheet" href="../styles/main.css">
+        <link rel="stylesheet" href="../styles/pixelate.css">
+        <link rel="stylesheet" href="css/style.css">
+        <!-- endbuild -->
+    </head>
+    <body>
+        <!--[if lt IE 10]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+
+
+        <div id="container" class="container">
+            <header>
+                <h1>Pixelate lib demo page</h1>
+            </header>
+            <div class="row-fluid">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <form id="upload-form" role="form" action="#" method="post" class="dropzone"></form>
+                    </div>
+                </div>
+                <div class="row upload-content">
+                    <div class="col-sm-6">
+                        <h2>Usage</h2>
+                        <div>
+                            <h4>pixelate(canvas, [options]</h4>
+                            <p>
+                                Options by default:<br>
+                                <ul>
+                                    <li><code>debug: false</code></li>
+                                    <li><code>radius: 10</code></li>
+                                    <li><code>maskedOnSelect: true</code></li>
+                                </ul><br>
+                            </p>
+                            <div class="bs-example">
+                                <p>Turn an image url to a canvas then pixelate it.<br><a href="#" onclick="Main.usagePixelate(); return false;" class="btn btn-default pull-right">Try this</a></p>
+                            </div>
+                            <div class="highlight">
+                                <pre>
+                                    <code>
+var canvas = document.createElement('canvas'),
+    context,
+    img = new Image();
+
+img.onload = function() {
+    context = canvas.getContext('2d');
+    canvas.width = img.width;
+    canvas.height = img.height;
+    context.drawImage(img, 0, 0);
+    var pxl = pixelate(canvas, {
+                radius: 10,
+                maskedOnSelect: true
+            });
+    pxl.select(0, 0, 50, 50);
+};
+img.src = 'images/ngoc-trinh.png';
+                                    </code>
+                                </pre>
+                            </div>
+                        </div>
+                        <h2>Public APIs</h2>
+                        <div>
+                            <h4>select(x, y, width, height)</h4>
+                            <p>
+                                Selects an area for masking, unmasking and pixelating.<br>
+                            </p>
+                            <div class="bs-example">
+                                <p>Select an 50x50 pixel area <br><a onclick="Main.apiSelect(0, 0, 50, 50); return false;" href="#" class="btn btn-default pull-right">Try this</a></p>
+                            </div>
+                            <div class="highlight">
+                                <pre>
+                                    <code>
+var pxl = pixelate(canvas);
+pxl.select(0, 0, 50, 50);
+                                    </code>
+                                </pre>
+                            </div>
+                        </div>
+                        <div>
+                            <h4>clear()</h4>
+                            <p>
+                                Clears the selected area.<br> 
+                            </p>
+                            <div class="bs-example">
+                                <p><br><a onclick="Main.apiClear(); return false;" href="#" class="btn btn-default pull-right">Try this</a></p>
+                            </div>
+                            <div class="highlight">
+                                <pre>
+                                    <code>
+var pxl = pixelate(canvas);
+pxl.select(0, 0, 50, 50);
+pxl.clear();
+                                    </code>
+                                </pre>
+                            </div>
+                        </div>
+                        <div>
+                            <h4>mask([radius])</h4>
+                            <p>
+                                Masks the selected area with pixelation.
+                            </p>
+                            <div class="bs-example">
+                                <p>Masks the selected area with 10 of ratio<br><a onclick="Main.apiMask(10); return false;" href="#" class="btn btn-default pull-right">Try this</a></p>
+                            </div>
+                            <div class="highlight">
+                                <pre>
+                                    <code>
+var pxl = pixelate(canvas);
+pxl.select(0, 0, 50, 50);
+pxl.mask(10);
+                                    </code>
+                                </pre>
+                            </div>
+                        </div>
+                        <div>
+                            <h4>unmask()</h4>
+                            <p>
+                                Unmasks the selected area, the area becomes transparent to reveal selected original
+                            </p>
+                            <div class="bs-example">
+                                <p>Unmasks the previous selected area<br><a onclick="Main.apiUnmask(); return false;" href="#" class="btn btn-default pull-right">Try this</a></p>
+                            </div>
+                            <div class="highlight">
+                                <pre>
+                                    <code>
+var pxl = pixelate(canvas);
+pxl.select(0, 0, 50, 50);
+pxl.unmask(10);
+                                    </code>
+                                </pre>
+                            </div>
+                        </div>
+                        <div>
+                            <h4>pixelate()</h4>
+                            <p>
+                                Pixelates the selected area and apply to the canvas
+                            </p>
+                            <div class="bs-example">
+                                <p><br><a onclick="Main.apiPixelate(); return false;" href="#" class="btn btn-default pull-right">Try this</a></p>
+                            </div>
+                            <div class="highlight">
+                                <pre>
+                                    <code>
+var pxl = pixelate(canvas);
+pxl.select(0, 0, 50, 50);
+pxl.pixelate(10);
+                                    </code>
+                                </pre>
+                            </div>
+                        </div>
+                        <div>
+                            <h4>move(offsetX, offsetY)</h4>
+                            <p>
+                                Moves the selected area to (offsetX, offsetY)
+                            </p>
+                            <div class="bs-example">
+                                <p><br><a onclick="Main.apiMove(10, 20); return false;" href="#" class="btn btn-default pull-right">Try this</a></p>
+                            </div>
+                            <div class="highlight">
+                                <pre>
+                                    <code>
+var pxl = pixelate(canvas);
+pxl.select(0, 0, 50, 50);
+pxl.move(10, 20);
+                                    </code>
+                                </pre>
+                            </div>
+                        </div>
+                        <div>
+                            <h4>getOriginalCanvas()</h4>
+                            <p>
+                                Gets the original canvas specified when being initialized.
+                            </p>
+                            <div class="bs-example">
+                            </div>
+                            <div class="highlight">
+                                <pre>
+                                    <code>
+var pxl = pixelate(canvas);
+pxl.select(0, 0, 50, 50);
+var origin = pxl.getOriginalCanvas();
+                                    </code>
+                                </pre>
+                            </div>
+                        </div>
+                        <div>
+                            <h4>getCurrentCanvas()</h4>
+                            <p>
+                                Gets the current canvas that could be pixelated or not.
+                            </p>
+                            <div class="bs-example">
+                            </div>
+                            <div class="highlight">
+                                <pre>
+                                    <code>
+var pxl = pixelate(canvas);
+pxl.select(0, 0, 50, 50);
+var current = pxl.getCurrentCanvas();
+                                    </code>
+                                </pre>
+                            </div>
+                        </div>
+                        <div>
+                            <h4>dispose()</h4>
+                            <p>
+                                Unregisters this instance to specified canvas on initialize and dispose this instance.<br>
+                                This is useful to enable, disable pixelate functionality on the specified canvas.
+                            </p>
+                            <div class="bs-example">
+                                <p><br><a onclick="Main.apiDispose(); return false;" href="#" class="btn btn-default pull-right">Try this</a></p>
+                            </div>
+                            <div class="highlight">
+                                <pre>
+                                    <code>
+var pxl = pixelate(canvas);
+pxl.select(0, 0, 50, 50);
+pxl.dispose();
+                                    </code>
+                                </pre>
+                            </div>
+                        </div>
+                        <div>
+                            <h4>isMasked()</h4>
+                            <p>
+                                Checks to see if the selected area is masked or not.
+                            </p>
+                            <div class="bs-example">
+                            </div>
+                            <div class="highlight">
+                                <pre>
+                                    <code>
+var pxl = pixelate(canvas);
+pxl.select(0, 0, 50, 50);
+console.log(pxl.isMasked());
+                                    </code>
+                                </pre>
+                            </div>
+                        </div>
+                        <div>
+                            <h4>getSelectedArea()</h4>
+                            <p>
+                                Gets the selected area, this is immutable
+                            </p>
+                            <div class="bs-example">
+                            </div>
+                            <div class="highlight">
+                                <pre>
+                                    <code>
+var pxl = pixelate(canvas);
+pxl.select(0, 0, 50, 50);
+console.log(pxl.getSelectedArea());
+                                    </code>
+                                </pre>
+                            </div>
+                        </div>
+                        <h2>Event triggers</h2>
+                        <div>
+                            <div><code>on('select:start', fn(x, y))</code></div>
+                            <div><code>on('select:stop', fn(x, y, selectedArea))</code></div>
+                            <div><code>on('select:move', fn(selectedArea))</code></div>
+                            <div><code>on('select:resize', fn(selectedArea))</code></div>
+                            <div><code>on('select:clear', fn(selectedArea))</code></div>
+                            <div><code>on('mask', fn(radius, selectedArea))</code></div>
+                            <div><code>on('unmask', fn(selectedArea))</code></div>
+                            <div><code>on('pixelate', fn(pixelatedCanvas))</code></div>
+                            <div><code>on('move', fn(offsetX, offsetY))</code></div>
+                            <div><code>on('dispose', fn())</code></div>
+                            <p></p>
+                            <div class="bs-example">
+                            </div>
+                            <div class="highlight">
+                                <pre>
+                                    <code>
+var pxl = pixelate(canvas);
+pxl.
+  on('select:start', function(x, y) {
+    console.log('select started at: ' + x + ':' + y);
+  }).
+  on('select:stop', function(x, y, selectedArea) {
+    console.log('select stopped at: ' + x + ':' + y, selectedArea);
+  });
+                                    </code>
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 upload-side">
+                        <div id="upload-images"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <script type="text/javascript" src="../bower_components/jquery/dist/jquery.js"></script>
+        <script type="text/javascript" src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
+        <script type="text/javascript" src="../bower_components/underscore/underscore.js"></script>
+        <script type="text/javascript" src="../bower_components/backbone/backbone.js"></script>
+        <!-- endbuild -->
+
+        <script type="text/javascript" src="../bower_components/dropzone/downloads/dropzone.js"></script>
+        <!-- main -->
+
+        <script type="text/javascript" src="../scripts/pixelate.js"></script>
+        <script type="text/javascript" src="js/custom.js"></script>
+        <!-- endbuild -->
+</body>
+</html>

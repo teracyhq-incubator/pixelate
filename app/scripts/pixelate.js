@@ -385,7 +385,7 @@
           width = this._selectedArea.w,
           height = this._selectedArea.h;
 
-      this._selectorContext.clearRect(x - 1, y - 1, width + 2, height + 2);
+      this._selectorContext.clearRect(x - 2, y - 2, width + 4, height + 4);
       this._selectedArea = selectedArea.EMPTY;
     },
 
@@ -433,7 +433,7 @@
           width = this._selectedArea.w,
           height = this._selectedArea.h;
 
-      this._selectorContext.clearRect(x, y, width + 2, height + 2);
+      this._selectorContext.clearRect(x, y, width, height);
     },
     /**
      * Gets the selected area, this is immutable

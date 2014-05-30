@@ -39,7 +39,7 @@
                     <div class="col-sm-6">
                         <h2>Usage</h2>
                         <div>
-                            <h4>pixelate(canvas, [options]</h4>
+                            <h4>pixelate(canvas, [options])</h4>
                             <p>
                                 Options by default:<br>
                                 <ul>
@@ -104,7 +104,7 @@ pxl.select(0, 0, 50, 50);
                                 <pre>
                                     <code>
 var pxl = pixelate(canvas);
-pxl.select(0, 0, 50, 50);
+....
 pxl.clear();
                                     </code>
                                 </pre>
@@ -122,7 +122,7 @@ pxl.clear();
                                 <pre>
                                     <code>
 var pxl = pixelate(canvas);
-pxl.select(0, 0, 50, 50);
+...
 pxl.mask(10);
                                     </code>
                                 </pre>
@@ -140,7 +140,7 @@ pxl.mask(10);
                                 <pre>
                                     <code>
 var pxl = pixelate(canvas);
-pxl.select(0, 0, 50, 50);
+...
 pxl.unmask(10);
                                     </code>
                                 </pre>
@@ -158,7 +158,7 @@ pxl.unmask(10);
                                 <pre>
                                     <code>
 var pxl = pixelate(canvas);
-pxl.select(0, 0, 50, 50);
+...
 pxl.pixelate(10);
                                     </code>
                                 </pre>
@@ -176,7 +176,7 @@ pxl.pixelate(10);
                                 <pre>
                                     <code>
 var pxl = pixelate(canvas);
-pxl.select(0, 0, 50, 50);
+...
 pxl.move(10, 20);
                                     </code>
                                 </pre>
@@ -193,8 +193,8 @@ pxl.move(10, 20);
                                 <pre>
                                     <code>
 var pxl = pixelate(canvas);
-pxl.select(0, 0, 50, 50);
-var origin = pxl.getOriginalCanvas();
+...
+var origin = pxl.originalCanvas;
                                     </code>
                                 </pre>
                             </div>
@@ -210,8 +210,8 @@ var origin = pxl.getOriginalCanvas();
                                 <pre>
                                     <code>
 var pxl = pixelate(canvas);
-pxl.select(0, 0, 50, 50);
-var current = pxl.getCurrentCanvas();
+...
+var current = pxl.currentCanvas;
                                     </code>
                                 </pre>
                             </div>
@@ -223,13 +223,12 @@ var current = pxl.getCurrentCanvas();
                                 This is useful to enable, disable pixelate functionality on the specified canvas.
                             </p>
                             <div class="bs-example">
-                                <p><br><a onclick="Main.apiDispose(); return false;" href="#" class="btn btn-default pull-right">Try this</a></p>
                             </div>
                             <div class="highlight">
                                 <pre>
                                     <code>
 var pxl = pixelate(canvas);
-pxl.select(0, 0, 50, 50);
+...
 pxl.dispose();
                                     </code>
                                 </pre>
@@ -246,7 +245,7 @@ pxl.dispose();
                                 <pre>
                                     <code>
 var pxl = pixelate(canvas);
-pxl.select(0, 0, 50, 50);
+...
 console.log(pxl.isMasked());
                                     </code>
                                 </pre>
@@ -263,7 +262,7 @@ console.log(pxl.isMasked());
                                 <pre>
                                     <code>
 var pxl = pixelate(canvas);
-pxl.select(0, 0, 50, 50);
+...
 console.log(pxl.getSelectedArea());
                                     </code>
                                 </pre>

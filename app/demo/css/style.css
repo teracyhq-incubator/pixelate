@@ -1,5 +1,8 @@
 .pixelate-parent {
 	margin: 0 0 10px 0;
+    height: 100%;
+}
+.upload-side {
 }
 #upload-form .dz-error-message {
 	display: none;

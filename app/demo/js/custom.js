@@ -54,15 +54,22 @@
           Main.mainPixelate.options.radius = $(this).val();
           Main.mainPixelate.mask();
         });
-        
+        var isFileSaverSupported = false;
+        try {
+            isFileSaverSupported = !!new Blob;
+        } catch (e) {
+          
+        }
         $('#save').click(function() {
           if (Main.mainPixelate.isMasked()) {
             self.apiPixelate();
             $('#radius').prop('disabled', true);
           }
-          Main.mainPixelate.currentCanvas.toBlob(function(blob) {
-              saveAs(blob, "pixelated-image.png");
-          });
+          if (isFileSaverSupported) {
+            Main.mainPixelate.currentCanvas.toBlob(function(blob) {
+                saveAs(blob, "pixelated-image.png");
+            });
+          }
           return false;
         });
 
@@ -84,7 +91,7 @@
           '</div>' +
           '<div class="form-group">' +
             '<div class="col-sm-offset-3 col-sm-9">' +
-              '<a id="save" class="btn btn-default" href="#">Save</a>' +
+              '<a id="save" class="btn btn-default" href="#">Apply &amp; Save</a>' +
             '</div>' +
           '</div>' +
           '</form></div>');

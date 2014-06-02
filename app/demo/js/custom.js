@@ -43,7 +43,23 @@
                           } else {
                             $('#radius').prop('disabled', false);
                           }
-                        });
+                        })
+                        .on('select:stop', function(x, y, selectedArea) {
+                          $('#logs').html('Select stopped at: (<b>' + x + '</b>, <b>' + y + '</b>)')
+                        })
+                        .on('select:clear', function() {
+                          $('#logs').html('Clear selected area')
+                        })
+                        .on('mask', function(radius, selectedArea) {
+                          $('#logs').html('Mask selected area with radius: <b>' + radius + '</b>')
+                        })
+                        .on('unmask', function(radius, selectedArea) {
+                          $('#logs').html('Unmask selected area')
+                        })
+                        .on('pixelate', function(radius, selectedArea) {
+                          $('#logs').html('Pixelate selected area')
+                        })
+                        ;
 
         var selectorCanvas = Main.mainPixelate._$selectorCanvas;
         selectorCanvas.parents('.pixelate-wrap').height(selectorCanvas.height());
@@ -58,13 +74,9 @@
         try {
             isFileSaverSupported = !!new Blob;
         } catch (e) {
-          
+
         }
         $('#save').click(function() {
-          if (Main.mainPixelate.isMasked()) {
-            self.apiPixelate();
-            $('#radius').prop('disabled', true);
-          }
           if (isFileSaverSupported) {
             Main.mainPixelate.currentCanvas.toBlob(function(blob) {
                 saveAs(blob, "pixelated-image.png");
@@ -72,7 +84,13 @@
           }
           return false;
         });
-
+        $('#apply').click(function() {
+          if (Main.mainPixelate.isMasked()) {
+            self.apiPixelate();
+            $('#radius').prop('disabled', true);
+          }
+          return false;
+        });
         $('html, body').animate({
           scrollTop: selectorCanvas.parent().offset().top
         })
@@ -91,10 +109,15 @@
           '</div>' +
           '<div class="form-group">' +
             '<div class="col-sm-offset-3 col-sm-9">' +
-              '<a id="save" class="btn btn-default" href="#">Apply &amp; Save</a>' +
+              '<a id="apply" class="btn btn-primary" href="#">Apply</a>&nbsp;' +
+              '<a id="save" class="btn btn-default" href="#">Download</a>' +
             '</div>' +
           '</div>' +
-          '</form></div>');
+          '</form>' + 
+          '<h4>Events Log</h4>' +
+          '<div id="logs"></div>' +
+          '</div>'
+          );
         canvasWrap = $('<div class="pixelate-wrap"></div>');
         Main.mainCavas = document.createElement('canvas');
         img = new Image();
@@ -128,6 +151,9 @@
       },
       apiMask: function(radius) {
         if (!Main.mainPixelate) return;
+        $('#radius-value').html('(' + radius + ')');
+        $('#radius').val(radius);
+        Main.mainPixelate.options.radius = radius;
         Main.mainPixelate.mask(radius);
       },
       apiUnmask: function() {

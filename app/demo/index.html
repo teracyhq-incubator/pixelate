@@ -48,7 +48,7 @@
                                 <ul>
                                     <li><code>debug: false</code></li>
                                     <li><code>radius: 10</code></li>
-                                    <li><code>maskedOnSelect: true</code></li>
+                                    <li><code>selector: {masked: true, strokeStyle: 'black'}</code></li>
                                 </ul><br>
                             </p>
                             <div class="bs-example">
@@ -68,7 +68,10 @@ img.onload = function() {
     context.drawImage(img, 0, 0);
     var pxl = pixelate(canvas, {
                 radius: 10,
-                maskedOnSelect: true
+                selector: {
+                  masked: true, // mask on select
+                  strokeStyle: 'black'
+                }
             });
     pxl.select(0, 0, 50, 50);
 };
@@ -275,8 +278,6 @@ console.log(pxl.getSelectedArea());
                         <div>
                             <div><code>on('select:start', fn(x, y))</code></div>
                             <div><code>on('select:stop', fn(x, y, selectedArea))</code></div>
-                            <div><code>on('select:move', fn(selectedArea))</code></div>
-                            <div><code>on('select:resize', fn(selectedArea))</code></div>
                             <div><code>on('select:clear', fn(selectedArea))</code></div>
                             <div><code>on('mask', fn(radius, selectedArea))</code></div>
                             <div><code>on('unmask', fn(selectedArea))</code></div>

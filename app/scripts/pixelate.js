@@ -9,7 +9,10 @@
  * options by default:
  * {
  *   radius: 10,
- *   maskedOnSelect: true
+ *   selector: {
+ *     masked: true, // masked on select
+ *     strokeStyle: 'black'
+ *   },
  *
  *   //TODO(hoatle): nice to have:
  *   keyboard: { //keyboard binding
@@ -348,7 +351,7 @@
       if (this.isMasked()) {
         this.pixelateSelectedArea();
       }
-      this.trigger('move', offsetX, offsetY);
+      this.trigger('move', se.x + offsetX, se.y + offsetY);
       return this;
     },
     /**
@@ -426,6 +429,8 @@
       var pixelatedImgData = this._pixelatedContext.getImageData(sa.x, sa.y, sa.w - 1, sa.h - 1);
 
       this._selectorContext.putImageData(pixelatedImgData, sa.x, sa.y);
+
+      this.trigger('mask', radius, sa);
     },
     clearPixelatedSelectedArea: function() {
       var x = this._selectedArea.x,
@@ -455,7 +460,6 @@
     mask: function(radius) {
       this.pixelateSelectedArea(radius);
       this._masked = true;
-      this.trigger('mask', radius, this.getSelectedArea());
       return this;
     },
     /**
@@ -729,6 +733,7 @@
       var x = this.mouse.endX - Math.floor(this._selectedArea.w / 2),
           y = this.mouse.endY - Math.floor(this._selectedArea.h / 2);
       this.createSelectedArea(x, y, this._selectedArea.w, this._selectedArea.h);
+      this.trigger('move', x, y);
       //FIXME: trigger 'move'
     },
     _getMousePos: function(e) {

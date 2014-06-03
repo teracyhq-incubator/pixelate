@@ -422,11 +422,11 @@
         debugCanvasContext.drawImage(this._pixelatedCanvas, 0, 0);
       }
 
-      sa.w = sa.w - 1 <= 0 ? sa.w = 2 : sa.w;
-      sa.h = sa.h - 1 <= 0 ? sa.h = 2 : sa.h;
+      sa.w = sa.w - 2 <= 0 ? sa.w = 3 : sa.w;
+      sa.h = sa.h - 2 <= 0 ? sa.h = 3 : sa.h;
       sa.x += 1; 
       sa.y += 1;
-      var pixelatedImgData = this._pixelatedContext.getImageData(sa.x, sa.y, sa.w - 1, sa.h - 1);
+      var pixelatedImgData = this._pixelatedContext.getImageData(sa.x + 1, sa.y + 1, sa.w - 2, sa.h - 2);
 
       this._selectorContext.putImageData(pixelatedImgData, sa.x, sa.y);
 

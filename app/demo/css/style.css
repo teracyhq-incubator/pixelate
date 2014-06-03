@@ -1,8 +1,9 @@
 .pixelate-parent {
 	margin: 0 0 10px 0;
-    height: 100%;
 }
-.upload-side {
+.pixelate-wrap {
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 #upload-form .dz-error-message {
 	display: none;
@@ -10,10 +11,16 @@
 .upload-content {
 	margin-top: 10px;
 }
+
 #upload-images.fixed {
     position: fixed;
     top: 0;
     width: 100%;
+}
+@media (max-width: 768px) {
+    #upload-images.fixed {
+        position: static !important;
+    }
 }
 body {
     position: relative;

@@ -3,15 +3,18 @@
   var defaults = {
     multiImage: false
   }
+
   $(function() {
     var Main = {
       mainCavas: null,
       mainContext: null,
       mainPixelate: null,
+      imgSrc: null,
       init: function() {
         var $side = $('.upload-side'),
             $uploadImage = $('#upload-images'),
-            $window = $(window);
+            $window = $(window),
+            timeout;
         $(window).scroll(function(e) {
           if ($window.scrollTop() > $side.offset().top) {
             $uploadImage.addClass('fixed');
@@ -19,8 +22,19 @@
             $uploadImage.removeClass('fixed');
           }
         });
+
+        $(window).resize(function() {
+          if (Main.mainPixelate) {
+            clearTimeout(timeout);
+            timeout = setTimeout(function() {
+              Main.createImage(Main.imgSrc);
+            },200);
+
+          }
+        });
       },
       pixelateImageFile: function(file) {
+        Main.file = file;
         var fileReader;
         fileReader = new FileReader;
         fileReader.onload = (function(_this) {
@@ -62,10 +76,12 @@
                         ;
 
         var selectorCanvas = Main.mainPixelate._$selectorCanvas;
-        selectorCanvas.parents('.pixelate-wrap').height(selectorCanvas.height());
+
+        selectorCanvas.parents('.pixelate-wrap').height($(window).height());
+        selectorCanvas.parents('.pixelate-parent').height(selectorCanvas.height());
         selectorCanvas.parents('.pixelate-wrap').width(selectorCanvas.width());
 
-        $('#radius').change(function() {
+        $('#radius').on('input', function() {
           $('#radius-value').html('(' + $(this).val() + ')');
           Main.mainPixelate.options.radius = $(this).val();
           Main.mainPixelate.mask();
@@ -96,6 +112,7 @@
         })
       },
       createImage: function(imgSrc) {
+        Main.imgSrc = imgSrc;
         if (!defaults.multiImage) {
           $('#upload-images *').remove();
         }
@@ -124,7 +141,7 @@
         
         $('#upload-images').append(canvasWrap);
         
-        var wrapWidth = $('#upload-images').width()
+        var wrapWidth = $('.upload-side').width()
 
         img.onload = function() {
           canvasWrap.append(Main.mainCavas, controls);

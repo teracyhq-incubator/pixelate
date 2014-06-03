@@ -188,7 +188,7 @@
      */
     pixelate: function() {
       var sa = this.getSelectedArea();
-      var pixelatedImgData = this._pixelatedContext.getImageData(sa.x, sa.y, sa.w - 1, sa.h - 1);
+      var pixelatedImgData = this._pixelatedContext.getImageData(sa.x + 1, sa.y + 1, sa.w - 2, sa.h - 2);
       this._currentCanvasContext.putImageData(pixelatedImgData, sa.x, sa.y);
       this.clear();
       this.trigger('pixelate', this.currentCanvas);

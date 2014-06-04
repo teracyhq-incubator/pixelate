@@ -9,7 +9,10 @@
  * options by default:
  * {
  *   radius: 10,
- *   maskedOnSelect: true
+ *   selector: {
+ *     masked: true, // masked on select
+ *     strokeStyle: 'black'
+ *   },
  *
  *   //TODO(hoatle): nice to have:
  *   keyboard: { //keyboard binding
@@ -185,7 +188,7 @@
      */
     pixelate: function() {
       var sa = this.getSelectedArea();
-      var pixelatedImgData = this._pixelatedContext.getImageData(sa.x + 1, sa.y + 1, sa.w - 1, sa.h - 1);
+      var pixelatedImgData = this._pixelatedContext.getImageData(sa.x + 1, sa.y + 1, sa.w - 2, sa.h - 2);
       this._currentCanvasContext.putImageData(pixelatedImgData, sa.x, sa.y);
       this.clear();
       this.trigger('pixelate', this.currentCanvas);
@@ -348,7 +351,7 @@
       if (this.isMasked()) {
         this.pixelateSelectedArea();
       }
-      this.trigger('move', offsetX, offsetY);
+      this.trigger('move', se.x + offsetX, se.y + offsetY);
       return this;
     },
     /**
@@ -385,7 +388,7 @@
           width = this._selectedArea.w,
           height = this._selectedArea.h;
 
-      this._selectorContext.clearRect(x - 1, y - 1, width + 2, height + 2);
+      this._selectorContext.clearRect(x - 2, y - 2, width + 4, height + 4);
       this._selectedArea = selectedArea.EMPTY;
     },
 
@@ -419,12 +422,15 @@
         debugCanvasContext.drawImage(this._pixelatedCanvas, 0, 0);
       }
 
-      sa.w = sa.w - 1 <= 0 ? sa.w = 2 : sa.w;
-      sa.h = sa.h - 1 <= 0 ? sa.h = 2 : sa.h;
-
-      var pixelatedImgData = this._pixelatedContext.getImageData(sa.x + 1, sa.y + 1, sa.w - 1, sa.h - 1);
+      sa.w = sa.w - 2 <= 0 ? sa.w = 3 : sa.w;
+      sa.h = sa.h - 2 <= 0 ? sa.h = 3 : sa.h;
+      sa.x += 1; 
+      sa.y += 1;
+      var pixelatedImgData = this._pixelatedContext.getImageData(sa.x + 1, sa.y + 1, sa.w - 2, sa.h - 2);
 
       this._selectorContext.putImageData(pixelatedImgData, sa.x, sa.y);
+
+      this.trigger('mask', radius, sa);
     },
     clearPixelatedSelectedArea: function() {
       var x = this._selectedArea.x,
@@ -432,7 +438,7 @@
           width = this._selectedArea.w,
           height = this._selectedArea.h;
 
-      this._selectorContext.clearRect(x + 1, y + 1, width - 1, height - 1);
+      this._selectorContext.clearRect(x, y, width, height);
     },
     /**
      * Gets the selected area, this is immutable
@@ -454,7 +460,6 @@
     mask: function(radius) {
       this.pixelateSelectedArea(radius);
       this._masked = true;
-      this.trigger('mask', radius, this.getSelectedArea());
       return this;
     },
     /**
@@ -728,6 +733,7 @@
       var x = this.mouse.endX - Math.floor(this._selectedArea.w / 2),
           y = this.mouse.endY - Math.floor(this._selectedArea.h / 2);
       this.createSelectedArea(x, y, this._selectedArea.w, this._selectedArea.h);
+      this.trigger('move', x, y);
       //FIXME: trigger 'move'
     },
     _getMousePos: function(e) {

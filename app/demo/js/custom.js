@@ -45,20 +45,25 @@
         return fileReader.readAsDataURL(file);
       },
       pixelateCanvas: function(canvas) {
-        var self = this;
+        var self = this,
+            timeout;
         Main.mainPixelate = pixelate(canvas, {
           debug: false,
           selector: {
             masked: true,
           }
         });
-
+        var logs = $('#logs');
+        
+        logs.bind("DOMSubtreeModified",function() {
+          clearTimeout(timeout);
+          timeout = setTimeout(function() {
+            logs.scrollTop(logs.prop("scrollHeight"));
+          }, 100);
+        });
         Main.mainPixelate
                         .on('select:start', function(x, y) {
-                          $('#log-select-start').html('Select started at: (<b>' + x + '</b>, <b>' + y + '</b>)');
-                          $('#log-select-clear').html('');
-                          $('#log-pixelate').html('');
-                          $('#log-mask').html('');
+                          logs.append('Select started at: (<b>' + x + '</b>, <b>' + y + '</b>)<br>');
                         })
                         .on('select:stop', function(x, y, selectedArea) {
                           if (selectedArea.isEmpty()) {
@@ -66,30 +71,22 @@
                           } else {
                             $('#radius').prop('disabled', false);
                           }
-                          $('#log-select-stop').html('Select stopped at: (<b>' + x + '</b>, <b>' + y + '</b>)');
+                          logs.append('Select stopped at: (<b>' + x + '</b>, <b>' + y + '</b>)<br>');
                         })
                         .on('select:clear', function() {
-                          $('#log-select-clear').html('Clear selected area');
-                          $('#log-select-start').html('');
-                          $('#log-select-stop').html('');
-                          $('#log-mask').html('');
-                          $('#log-unmask').html('');
-                          $('#log-pixelate').html('');
-                          $('#log-move').html('')
+                          logs.append('Clear selected area');
                         })
                         .on('mask', function(radius, selectedArea) {
-                          $('#log-unmask').html('');
-                          $('#log-mask').html('Mask selected area with radius: <b>' + radius + '</b>')
+                          logs.append('Mask selected area with radius: <b>' + radius + '</b><br>')
                         })
                         .on('unmask', function(radius, selectedArea) {
-                          $('#log-unmask').html('Unmask selected area');
-                          $('#log-mask').html('');
+                          logs.append('Unmask selected area<br>');
                         })
                         .on('pixelate', function(radius, selectedArea) {
-                          $('#log-pixelate').html('Pixelate selected area')
+                          logs.append('Pixelate selected area<br>')
                         })
                         .on('move', function(x, y) {
-                          $('#log-move').html('Moved to: (<b>' + x + '</b>, <b>' + y + '</b>)')
+                          logs.append('Moved to: (<b>' + x + '</b>, <b>' + y + '</b>)<br>')
                         })
                         ;
 
@@ -146,17 +143,8 @@
             '</div>' +
           '</div>' +
           '</form>' +
-          '<div id="logs">' +
-            '<table class="table table-striped">' +
-              '<tr><th>Events</th><th>Logs</th><tr>' +
-              '<tr><td>on("select:start", fn(x, y))</td><td id="log-select-start"></td><tr>' +
-              '<tr><td>on("select:stop", fn(x, y, selectedArea))</td><td id="log-select-stop"></td><tr>' +
-              '<tr><td>on("select:clear", fn(selectedArea))</td><td id="log-select-clear"></td><tr>' +
-              '<tr><td>on("mask", fn(radius, selectedArea))</td><td id="log-mask"></td><tr>' +
-              '<tr><td>on("unmask", fn(selectedArea))</td><td id="log-unmask"></td><tr>' +
-              '<tr><td>on("pixelate", fn(pixelatedCanvas))</td><td id="log-pixelate"></td><tr>' +
-              '<tr><td>on("move", fn(offsetX, offsetY))</td><td id="log-move"></td><tr>' +
-            '</table>' +
+          '<div class="col-xs-12" id="logs">' +
+
           '</div>' +
           '</div>'
           );

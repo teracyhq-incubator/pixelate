@@ -11,7 +11,11 @@
 .upload-content {
 	margin-top: 10px;
 }
-
+#logs {
+    height: 150px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
 #upload-images.fixed {
     position: fixed;
     top: 0;

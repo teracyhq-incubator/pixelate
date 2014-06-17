@@ -11,8 +11,8 @@ preview what is changing.
 
 Here are the sample of what this pixelate library can do:
 
-![State 1](https://code.teracy.org/projects/PILOT/repos/pixelate/browse/app/assets/state-1.png)
-![State 2](https://code.teracy.org/projects/PILOT/repos/pixelate/browse/app/assets/state-2.png)
+![State 1](https://code.teracy.org/projects/PILOT/repos/pixelate/browse/app/assets/state-1.png?raw)
+![State 2](https://code.teracy.org/projects/PILOT/repos/pixelate/browse/app/assets/state-1.png?raw)
 
 
 Checkout this demo for a closer look: http://teracy-official.github.io/pixelate/

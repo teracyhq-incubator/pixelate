@@ -147,7 +147,7 @@ pxl.mask(10);
                                     <code>
 var pxl = pixelate(canvas);
 ...
-pxl.unmask(10);
+pxl.unmask();
                                     </code>
                                 </pre>
                             </div>
@@ -189,7 +189,7 @@ pxl.move(10, 20);
                             </div>
                         </div>
                         <div>
-                            <h4>getOriginalCanvas()</h4>
+                            <h4>originalCanvas</h4>
                             <p>
                                 Gets the original canvas specified when being initialized.
                             </p>
@@ -206,7 +206,7 @@ var origin = pxl.originalCanvas;
                             </div>
                         </div>
                         <div>
-                            <h4>getCurrentCanvas()</h4>
+                            <h4>currentCanvas</h4>
                             <p>
                                 Gets the current canvas that could be pixelated or not.
                             </p>
@@ -260,7 +260,7 @@ console.log(pxl.isMasked());
                         <div>
                             <h4>getSelectedArea()</h4>
                             <p>
-                                Gets the selected area, this is immutable
+                                Gets the selected area, this is immutable.
                             </p>
                             <div class="bs-example">
                             </div>

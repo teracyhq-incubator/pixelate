@@ -15,7 +15,7 @@ Here are the sample of what this pixelate library can do:
 ![State 2](app/assets/state-2.png)
 
 
-Checkout this demo for closer look: http://teracy.github.io/pixelate/app/demo/
+Checkout this demo for a closer look: http://teracy-official.github.io/pixelate/
 
 Usage
 =====

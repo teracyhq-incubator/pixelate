@@ -10,4 +10,4 @@ install:
 before_script: grunt build
 notifications:
   slack:
-    secure: IedGHsEmfbDcckwxuCnB/bdzifXROBqvUQ1ldQ6ZGX1MLjgsyqGBTHCsLx6r24Wstw/BShmu73i3ulmzTZdYg6Hd9zSfvSz6uxkOVoVTAMRUqemCY2YB8m44Sd8wwjZXY4y7ZfZRHcfc9Tvm4lgp+jO05DDgq+12YxrOLuyOw7o=
+    secure: KVnwfl/t4CDpXGoOxxG6I+KaODzRXnXAkvb/jvHKbBkgSpf5yMQSRD577Qfv2EXoVJwrkrGvuM0WotsXgbjcTfP+Xw31MqcfYYZh5jtwhuwx7vuMSRHxIheBFXR6mpv9jvsHalqz3sfuKFOxBFKMlldRQp5fr6fUMjp4iCA/0x8=

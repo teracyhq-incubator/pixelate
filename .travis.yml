@@ -1,0 +1,13 @@
+language: node_js
+node_js:
+- '0.10'
+before_install:
+- npm install -g grunt-cli
+- npm install -g bower
+install:
+- npm install
+- bower install
+before_script: grunt build
+notifications:
+  slack:
+    secure: IedGHsEmfbDcckwxuCnB/bdzifXROBqvUQ1ldQ6ZGX1MLjgsyqGBTHCsLx6r24Wstw/BShmu73i3ulmzTZdYg6Hd9zSfvSz6uxkOVoVTAMRUqemCY2YB8m44Sd8wwjZXY4y7ZfZRHcfc9Tvm4lgp+jO05DDgq+12YxrOLuyOw7o=

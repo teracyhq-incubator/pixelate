@@ -6,7 +6,7 @@ Pixelate an image's canvas just by select.
 Overview
 ========
 
-This libray can turn an image's canvas to a selectable area that you can select and real time
+This libray can turn an image's canvas, element, source link to a selectable area that you can select and real time
 preview what is changing.
 
 Here are the sample of what this pixelate library can do:
@@ -40,6 +40,22 @@ img.onload = function() {
     pxl.select(0, 0, 50, 50);
 };
 img.src = 'images/sample.png';
+
+// or
+
+var pxl = pixelate('images/sample.png');
+pxl.on('loaded', function() {
+    $('body').append(pxl.$el);
+});
+
+// or
+
+var pxl = pixelate($('#my-image'));
+
+// or
+
+var pxl = pixelate(document.getElementById('my-image'));
+
 ```
 
 APIs

@@ -10,18 +10,28 @@
       mainCanvas.width = img.width;
       mainCanvas.height = img.height;
       context.drawImage(img, 0, 0, img.width, img.height);
-      //mainCanvas.style.width = (img.width + 100) + 'px';
-      //mainCanvas.style.height = (img.height - 100) + 'px';
-      initPixelate();
+      pxlImgByCanvas(mainCanvas);
     };
     img.src = '/assets/darth-vader.jpg';
 
-    function initPixelate() {
-      var pxl = window.pxl = pixelate(mainCanvas, {
+    pxlImgBySrc('/assets/darth-vader.jpg');
+
+    pxlImgByObj($('#img-test'));
+
+    function pxlImgBySrc(obj) {
+      var pxl = pixelate(obj);
+      pxl.on('loaded', function() {
+        $('body').append(pxl.$el);
+      })
+    }
+    function pxlImgByObj(obj) {
+      pixelate(obj);
+    }
+    function pxlImgByCanvas(obj) {
+      var pxl = window.pxl = pixelate(obj, {
         debug: true
       }); //export pxl to test on console
 
-      window.originalCtx = pxl.originalCanvas.getContext('2d');
       window.selectorCtx = pxl._selectorContext;
 
       pxl.

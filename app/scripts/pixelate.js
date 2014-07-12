@@ -80,6 +80,9 @@ var _ = _ || {
   isArray: function(obj) {
     return Object.prototype.toString.call(obj) == '[object Array]';
   },
+  isString: function(obj) {
+    return typeof obj == 'string' || obj instanceof String
+  },
   defaults: function(obj1, obj2) {
     var obj3 = {},
         attrname;
@@ -242,17 +245,66 @@ var Backbone = Backbone || {
      * @param canvas required specified Canvas element
      * @param options optional object
      */
-    initialize: function(canvas, options) {
-      this.originalCanvas = canvas;
-      this.currentCanvas = canvas;
-      this._$currentCanvas = $(this.currentCanvas);
-      this._currentCanvasContext = this.currentCanvas.getContext('2d');
+    initialize: function(obj, options) {
       this.options = _.defaults(options || {}, defaultOptions);
 
-      this._redraw();
+      function init(canvas) {
+        this.originalCanvas = canvas;
+        this.currentCanvas = canvas;
+        this._$currentCanvas = $(this.currentCanvas);
+        this._currentCanvasContext = this.currentCanvas.getContext('2d');
 
-      this.initSelector();
-      this.initUISelector();
+        this._redraw();
+
+        this.initSelector();
+        this.initUISelector();
+        
+        this.trigger('loaded');
+      }
+
+      var self = this;
+
+      if (_.isString(obj)) {
+        // allow pass image string
+        var newCanvas = document.createElement('canvas'),
+            newContext = newCanvas.getContext('2d'),
+            img = new Image();
+
+        img.onload = function() {
+          newCanvas.width = img.width;
+          newCanvas.height = img.height;
+
+          $(newCanvas).width(img.width).height(img.height);
+
+          newContext.drawImage(img, 0, 0, img.width, img.height);
+
+          init.call(self, newCanvas);
+        }
+
+        img.src = obj;
+      } else {
+        if (obj.jquery) {
+          obj = obj[0];
+        }
+        // or image object element
+        if (obj.nodeName == 'IMG') {
+          var newCanvas = document.createElement('canvas'),
+              newContext = newCanvas.getContext('2d');
+
+          newCanvas.width = obj.width;
+          newCanvas.height = obj.height;
+
+          $(newCanvas).width(obj.width).height(obj.height);
+
+          newContext.drawImage(obj, 0, 0, obj.width, obj.height);
+
+          $(obj).replaceWith(newCanvas);
+
+          init.call(self, newCanvas);
+        } else if (obj.nodeName == 'CANVAS') {
+          init.call(this, obj);
+        }
+      }
     },
     /**
      * Updates new canvas and options to existing ones.
@@ -378,9 +430,12 @@ var Backbone = Backbone || {
       //default selectedArea is EMPTY
       this._selectedArea = selectedArea.EMPTY;
 
-      //wrap original canvas to a div with .pixelate-parent
       this._$currentCanvas.addClass('pixelate-src');
+
       this._$currentCanvas.wrap('<div class="pixelate-parent"></div>');
+
+      //wrapper of original canvas with a div with .pixelate-parent
+      this.$el = this._$currentCanvas.parent();
 
       this._$selectorCanvas.addClass('pixelate-selector');
 

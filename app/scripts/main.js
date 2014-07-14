@@ -3,7 +3,7 @@
 
     function pxlImgBySrc(obj) {
         var pxl = pixelate(obj);
-        pxl.on('loaded', function () {
+        pxl.on('load', function () {
             $('body').append(pxl.$el);
         });
     }

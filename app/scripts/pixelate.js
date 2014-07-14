@@ -317,7 +317,7 @@ var Backbone = Backbone || ({
                 self.initSelector();
                 self.initUISelector();
 
-                self.trigger('loaded');
+                self.trigger('load');
             }
 
             var newCanvas, newContext;

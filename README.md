@@ -44,7 +44,7 @@ img.src = 'images/sample.png';
 // or
 
 var pxl = pixelate('images/sample.png');
-pxl.on('loaded', function() {
+pxl.on('load', function() {
     $('body').append(pxl.$el);
 });
 

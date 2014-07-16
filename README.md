@@ -213,3 +213,12 @@ Event triggers
 - `on('move', fn(offsetX, offsetY))`: when selected area move
 
 - `on('dispose', fn())`: when dispose
+
+Resources
+=========
+
+The pixelate lib demo using the following public licensed images:
+
+- Death valley sand dunes by [Jon Sullivan](http://www.public-domain-photos.com/authors/Jon-Sullivan)
+
+- Girl and dog by [Paolo Neo](http://www.public-domain-photos.com/authors/Paolo-Neo)

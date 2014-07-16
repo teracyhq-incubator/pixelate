@@ -11,8 +11,8 @@ preview what is changing.
 
 Here are the sample of what this pixelate library can do:
 
-![State 1](https://code.teracy.org/projects/PILOT/repos/pixelate/browse/app/assets/state-1.png?raw)
-![State 2](https://code.teracy.org/projects/PILOT/repos/pixelate/browse/app/assets/state-2.png?raw)
+![State 1](https://raw.githubusercontent.com/teracy-official/pixelate/develop/app/assets/state-1.png)
+![State 2](https://raw.githubusercontent.com/teracy-official/pixelate/develop/app/assets/state-2.png)
 
 
 Checkout this demo for a closer look: http://teracy-official.github.io/pixelate/
@@ -213,3 +213,12 @@ Event triggers
 - `on('move', fn(offsetX, offsetY))`: when selected area move
 
 - `on('dispose', fn())`: when dispose
+
+Resources
+=========
+
+The pixelate lib demo using the following public licensed images:
+
+- Death valley sand dunes by [Jon Sullivan](http://www.public-domain-photos.com/authors/Jon-Sullivan)
+
+- Girl and dog by [Paolo Neo](http://www.public-domain-photos.com/authors/Paolo-Neo)

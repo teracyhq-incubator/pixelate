@@ -170,7 +170,7 @@
         Main.imgSrc = imgSrc;
       },
       usagePixelate: function() {
-        Main.createImage('images/ngoc-trinh.png');
+        Main.createImage('images/girl-and-dog.jpg');
       },
       apiSelect: function(x, y, width, height) {
         if (!Main.mainPixelate) return;

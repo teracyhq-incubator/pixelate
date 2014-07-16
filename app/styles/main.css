@@ -31,3 +31,30 @@ body {
 #debug-canvas {
   float: right;
 }
+.browsers .devicons {
+    font-size: 4em;
+}
+.browsers div .badge {
+    position: absolute;
+    bottom: 3px;
+    right: 0;
+    background: #fff;
+    color: #000;
+    border-radius: 5px;
+    border: 1px solid #CFCFCF;
+}
+.browsers div .devicons-ie {
+    color: #4E70A4;
+}
+.browsers div .devicons-firefox {
+    color: #E93C00;
+}
+.browsers div .devicons-chrome {
+    color: #5DAD50;
+}
+.browsers div .devicons-safari {
+    color: #4E70A4;
+}
+.browsers div .devicons-opera {
+    color: #D83039;
+}

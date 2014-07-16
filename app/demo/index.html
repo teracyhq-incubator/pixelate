@@ -11,6 +11,7 @@
         <!-- bower:css -->
         <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="../bower_components/dropzone/downloads/css/dropzone.css" />
+        <link rel="stylesheet" href="../bower_components/devicons/css/devicons.css" />
         <!-- endbower -->
         <!-- endbuild -->
         <!-- build:css(.tmp) styles/main.css -->
@@ -28,9 +29,32 @@
         <div id="container" class="container">
             <header>
                 <h1>Pixelate lib demo page</h1>
-                <p class="pull-right">
-                    <img height="50" title="browers" alt="browers" src="images/BrowsersModified.png">
-                </p>
+                <div class="browsers row">
+                    <div class="col-md-5 col-md-offset-7 col-sm-7 col-sm-offset-5 col-xs-9 col-xs-offset-3">
+                        <div class="col-xs-2">
+                        </div>
+                        <div class="col-xs-2">
+                            <span class="devicons devicons-ie"></span>
+                            <span class="badge">9+</span>
+                        </div>
+                        <div class="col-xs-2">
+                            <span class="devicons devicons-firefox"></span>
+                            <span class="badge">17+</span>
+                        </div>
+                        <div class="col-xs-2">
+                            <span class="devicons devicons-chrome"></span>
+                            <span class="badge">13+</span>
+                        </div>
+                        <div class="col-xs-2">
+                            <span class="devicons devicons-safari"></span>
+                            <span class="badge">5+</span>
+                        </div>
+                        <div class="col-xs-2">
+                            <span class="devicons devicons-opera"></span>
+                            <span class="badge">11+</span>
+                        </div>
+                    </div>
+                </div>
             </header>
             <div class="row-fluid">
                 <div class="row">
@@ -305,7 +329,7 @@ pxl.
                         <h2>Resources</h2>
                         <div>
                             <p>
-                                The sample image is authored by <a href="http://www.public-domain-photos.com/authors/Paolo-Neo">Paolo Neo</a>
+                                The sample image is authored by <a href="http://www.public-domain-photos.com/authors/Paolo-Neo">Paolo Neo</a><br>
                             </p>
                         </div>
                     </div>

@@ -9,7 +9,8 @@
     "dropzone": "https://github.com/enyo/dropzone.git",
     "filesaver": "https://github.com/eligrey/FileSaver.js.git",
     "blob": "https://github.com/eligrey/Blob.js.git",
-    "canvas-toBlob": "https://github.com/eligrey/canvas-toBlob.js.git"
+    "canvas-toBlob": "https://github.com/eligrey/canvas-toBlob.js.git",
+    "devicons": "https://github.com/vorillaz/devicons.git"
   },
   "devDependencies": {}
 }

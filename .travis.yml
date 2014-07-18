@@ -7,7 +7,14 @@ before_install:
 install:
 - npm install
 - bower install
-before_script: grunt build
+before_script:
+- grunt build
+- export REPO_URL="ssh://git@code.teracy.org/~phuonglm/pixelate.git"
+after_script:
+- cd app
+- make setup_gh_pages
+- make generate
+- make deploy
 notifications:
   slack:
     secure: KVnwfl/t4CDpXGoOxxG6I+KaODzRXnXAkvb/jvHKbBkgSpf5yMQSRD577Qfv2EXoVJwrkrGvuM0WotsXgbjcTfP+Xw31MqcfYYZh5jtwhuwx7vuMSRHxIheBFXR6mpv9jvsHalqz3sfuKFOxBFKMlldRQp5fr6fUMjp4iCA/0x8=

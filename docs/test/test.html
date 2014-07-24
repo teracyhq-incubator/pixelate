@@ -16,13 +16,13 @@
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <!-- build:css styles/vendor.css -->
     <!-- bower:css -->
-    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
-    <link rel="stylesheet" href="bower_components/dropzone/downloads/css/dropzone.css" />
+    <link rel="stylesheet" href="../../bower_components/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="../../bower_components/dropzone/downloads/css/dropzone.css" />
     <!-- endbower -->
     <!-- endbuild -->
     <!-- build:css(.tmp) styles/main.css -->
-    <link rel="stylesheet" href="styles/pixelate.css">
-    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="../styles/pixelate.css">
+    <link rel="stylesheet" href="../styles/main.css">
     <!-- endbuild -->
   </head>
   <body>
@@ -40,19 +40,19 @@
     </div>
     <h2>Init pixelate by image element</h2>
     <div class="pixelate-container">
-      <img id="img-test" src="/assets/death-valley-sand-dunes.jpg">
+      <img id="img-test" src="assets/death-valley-sand-dunes.jpg">
     </div>
     <h2>Init pixelate by just image src</h2>
     <!-- build:js scripts/vendor.js -->
     <!-- bower:js -->
-    <script src="bower_components/jquery/dist/jquery.js"></script>
-    <script src="bower_components/underscore/underscore.js"></script>
-    <script src="bower_components/backbone/backbone.js"></script>
-    <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
-    <script src="bower_components/dropzone/downloads/dropzone.min.js"></script>
-    <script src="bower_components/filesaver/filesaver.js"></script>
-    <script src="bower_components/blob/blob.js"></script>
-    <script src="bower_components/canvas-toBlob/canvas-toBlob.js"></script>
+    <script src="../bower_components/jquery/dist/jquery.js"></script>
+    <script src="../bower_components/underscore/underscore.js"></script>
+    <script src="../bower_components/backbone/backbone.js"></script>
+    <script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="../bower_components/dropzone/downloads/dropzone.min.js"></script>
+    <script src="../bower_components/filesaver/FileSaver.js"></script>
+    <script src="../bower_components/blob/Blob.js"></script>
+    <script src="../bower_components/canvas-toBlob/canvas-toBlob.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
@@ -75,7 +75,7 @@
     </script>
 
     <!-- build:js({app,.tmp}) scripts/main.js -->
-    <script src="scripts/pixelate.js"></script>
+    <script src="../scripts/pixelate.js"></script>
     <script src="scripts/main.js"></script>
     <!-- endbuild -->
   </body>

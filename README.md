@@ -1,8 +1,6 @@
 pixelate
 ========
 
-*Version 0.1.0*
-
 [![Build Status](https://travis-ci.org/teracy-official/pixelate.svg?branch=develop)](https://travis-ci.org/teracy-official/pixelate)  
 
 Pixelate an image's canvas just by select.

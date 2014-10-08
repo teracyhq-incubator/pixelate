@@ -23,6 +23,25 @@ Usage
 =====
 
 ```js
+var pxl = pixelate($('#my-image'));
+pxl.select(0, 0, 50, 50);
+
+
+// or
+
+var pxl = pixelate(document.getElementById('my-image'));
+
+
+// or
+
+var pxl = pixelate('images/sample.png');
+pxl.on('load', function() {
+    $('body').append(pxl.$el);
+});
+
+
+// or
+
 var canvas = document.createElement('canvas'),
     context,
     img = new Image();
@@ -42,21 +61,6 @@ img.onload = function() {
     pxl.select(0, 0, 50, 50);
 };
 img.src = 'images/sample.png';
-
-// or
-
-var pxl = pixelate('images/sample.png');
-pxl.on('load', function() {
-    $('body').append(pxl.$el);
-});
-
-// or
-
-var pxl = pixelate($('#my-image'));
-
-// or
-
-var pxl = pixelate(document.getElementById('my-image'));
 
 ```
 

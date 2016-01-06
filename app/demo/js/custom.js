@@ -48,6 +48,7 @@
         var self = this,
             timeout;
         Main.mainPixelate = pixelate(canvas, {
+          keyboardEnabled: true,
           debug: false,
           selector: {
             masked: true,
@@ -77,16 +78,28 @@
                           logs.append('Clear selected area');
                         })
                         .on('mask', function(radius, selectedArea) {
-                          logs.append('Mask selected area with radius: <b>' + radius + '</b><br>')
+                          logs.append('Mask selected area with radius: <b>' + radius + '</b><br>');
                         })
                         .on('unmask', function(radius, selectedArea) {
                           logs.append('Unmask selected area<br>');
                         })
                         .on('pixelate', function(radius, selectedArea) {
-                          logs.append('Pixelate selected area<br>')
+                          logs.append('Pixelate selected area<br>');
                         })
                         .on('move', function(x, y) {
                           logs.append('Moved to: (<b>' + x + '</b>, <b>' + y + '</b>)<br>')
+                        })
+                        .on('keyboard:enable', function() {
+                          logs.append('keyboard:enabled<br>');
+                        })
+                        .on('keyboard:enabled', function() {
+                          logs.append('keyboard is enabled<br>');
+                        })
+                        .on('keyboard:disable', function() {
+                          logs.append('keyboard:disabled<br>');
+                        })
+                        .on('keyboard:disabled', function() {
+                          logs.append('keyboard is disabled<br>');
                         })
                         ;
 
@@ -203,8 +216,16 @@
       apiDispose: function() {
         if (!Main.mainPixelate) return;
         Main.mainPixelate.dispose();
-      }
-    }
+      },
+      apiEnableKeyboard: function() {
+        if (!Main.mainPixelate) return;
+        Main.mainPixelate.enableKeyboard();
+      },
+      apiDisableKeyboard: function() {
+          if (!Main.mainPixelate) return;
+          Main.mainPixelate.disableKeyboard();
+        }
+      };  
     Dropzone.options.uploadForm = {
       init: function() {
         this.on("addedfile", function(file) {

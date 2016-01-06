@@ -244,6 +244,23 @@ var Backbone = Backbone || ({
             masked: true,
             strokeStyle: 'black'
         },
+        keyboard: {//Keyboard binding
+            undo: 90,//ctrl + z
+            redo: 89,//ctrl + y
+            pixelate: 13,//Enter
+            move: {
+              Top: 38,//Top
+              Left: 39,//Left
+              Right: 37,//Right
+              Bottom: 40//Bottom
+            },//'top right bottom left',
+            resize: {
+              metaTop: 38,//meta + up
+              metaLeft: 39,//meta + left
+              metaRight: 37,//meta + right
+              metaBottom: 40//meta + down
+            }//'meta+top, meta+left, meta+bottom, meta+left'
+        },
         debug: false
     };
 
@@ -316,6 +333,7 @@ var Backbone = Backbone || ({
 
                 self.initSelector();
                 self.initUISelector();
+                self.initkeyboard();
 
                 self.trigger('load');
             }
@@ -464,6 +482,9 @@ var Backbone = Backbone || ({
             this._$selectorCanvas = $(this._selectorCanvas);
             this._selectorContext = this._selectorCanvas.getContext('2d');
 
+            //setAttribute
+            this._selectorCanvas.setAttribute("tabindex", 0);
+
             //sharp lines
             this._selectorContext.translate(0.5, 0.5);
             this._selectorContext.setLineDash = this._selectorContext.setLineDash || function () {};
@@ -480,6 +501,13 @@ var Backbone = Backbone || ({
             this._pixelatedContext.mozImageSmoothingEnabled = false;
             this._pixelatedContext.webkitImageSmoothingEnabled = false;
             this._pixelatedContext.imageSmoothingEnabled = false;
+
+             //default keyboard            
+            this._pixelate = this.options.keyboard.pixelate;
+            this._resize = this.options.keyboard.resize;
+            this._redo = this.options.keyboard.redo;
+            this._undo = this.options.keyboard.undo;
+            this._move = this.options.keyboard.move;
 
 
             this._masked = this.options.selector.masked;
@@ -517,6 +545,13 @@ var Backbone = Backbone || ({
             this._pixelatedContext.mozImageSmoothingEnabled = false;
             this._pixelatedContext.webkitImageSmoothingEnabled = false;
             this._pixelatedContext.imageSmoothingEnabled = false;
+
+            // update default keyboard
+            this._pixelate = this.options.keyboard.pixelate;
+            this._resize = this.options.keyboard.resize;
+            this._redo = this.options.keyboard.redo;
+            this._undo = this.options.keyboard.undo;
+            this._move = this.options.keyboard.move;
         },
         /**
          * Disposes this selector (de-init).
@@ -970,7 +1005,89 @@ var Backbone = Backbone || ({
 
         }
     });
+      //initkeyboard 
+    _.extend(Pixelate.prototype, {
+        initkeyboard: function() {
 
+            var k = this;
+            this._selectorCanvas.addEventListener('keydown', function (e) {
+                k.pixelatekey(e);
+                k.undokey(e);
+                k.redokey(e);
+                k.movekey(e);
+                k.resizekey(e);
+            });
+            
+        },
+        pixelatekey: function (e) {
+            if(e.keyCode === this._pixelate) {
+                e = e || window.event;
+                this.pixelate();
+            }
+        },
+        undokey: function (e) {
+            if(e.keyCode === this._undo && e.ctrlKey) {
+                e = e || window.event;
+                this.unmask();
+            }
+        },
+        redokey: function (e) {
+            if(e.keyCode === this._redo && e.ctrlKey) {
+                e = e || window.event;
+                this.mask();
+            }
+        },
+        movekey: function (e) {
+            if(e.keyCode === this._move.Top) {
+                e = e || window.event;
+                this.move(0, -5);
+            }
+            else if(e.keyCode === this._move.Right) {
+                e = e || window.event;
+                this.move(-5, 0);
+            }
+            else if(e.keyCode === this._move.Bottom) {
+                e = e || window.event;
+                this.move(0, 5);
+            }
+            else if(e.keyCode === this._move.Left) {
+                e = e || window.event;
+                this.move(5, 0);
+            }
+            else {
+                return;
+            }
+        },
+        resizekey: function (e) {
+            if(e.keyCode === this._resize.metaTop && e.shiftKey) {
+                e = e || window.event;
+                this.resizeTop();
+                this.mask();
+                
+            }
+            else if(e.keyCode === this._resize.metaLeft && e.shiftKey) {
+                e = e || window.event;
+                this.resizeLeft();
+                this.mask();
+                
+            }
+            else if(e.keyCode === this._resize.metaRight && e.shiftKey) {
+                e = e || window.event;
+                this.resizeRight();
+                this.mask();
+                
+            }
+            else if(e.keyCode === this._resize.metaBottom && e.shiftKey) {
+                e = e || window.event;
+                this.resizeBottom();
+                this.mask();
+                
+            }
+            else {
+                return;
+            }
+        }    
+    });
     //export
     window.pixelate = function (canvas, options) {
         return new Pixelate(canvas, options);

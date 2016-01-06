@@ -54,9 +54,9 @@
             context.drawImage(img, 0, 0, img.width, img.height);
             pxlImgByCanvas(mainCanvas);
         };
-        img.src = '/assets/death-valley-sand-dunes.jpg';
+        img.src = 'assets/death-valley-sand-dunes.jpg';
 
-        pxlImgBySrc('/assets/death-valley-sand-dunes.jpg');
+        pxlImgBySrc('assets/death-valley-sand-dunes.jpg');
 
         pxlImgByObj($('#img-test'));
 

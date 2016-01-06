@@ -1,0 +1,14 @@
+<img id="img-test" src="/assets/death-valley-sand-dunes.jpg" alt="not recive">
+------------------------------------------------------
+<link rel="shortcut icon" href="favicon.ico">
+------------------------------------------------------
+improve bower_componet
+------------------------------------------------------
+img.src = '/assets/death-valley-sand-dunes.jpg';
+
+pxlImgBySrc('/assets/death-valley-sand-dunes.jpg');
+-------------------------------------------------------
+don't use adblock
+e.src = '//www.google-analytics.com/analytics.js';
+-------------------------------------------------------
+not pixelate in chrome, but implement in firefox

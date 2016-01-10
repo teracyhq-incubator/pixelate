@@ -249,17 +249,17 @@ var Backbone = Backbone || ({
             redo: 89,//ctrl + y
             pixelate: 13,//Enter
             move: {
-              Top: 38,//Top
-              Left: 39,//Left
-              Right: 37,//Right
-              Bottom: 40//Bottom
-            },//'top right bottom left',
+                'Top': 38,//Top
+                'Left': 39,//Left
+                'Right': 37,//Right
+                'Bottom': 40//Bottom
+            },
             resize: {
-              metaTop: 38,//meta + up
-              metaLeft: 39,//meta + left
-              metaRight: 37,//meta + right
-              metaBottom: 40//meta + down
-            }//'meta+top, meta+left, meta+bottom, meta+left'
+                'metaTop': 38,//meta + up
+                'metaLeft': 39,//meta + left
+                'metaRight': 37,//meta + right
+                'metaBottom': 40//meta + down
+            }
         },
         debug: false
     };
@@ -483,7 +483,7 @@ var Backbone = Backbone || ({
             this._selectorContext = this._selectorCanvas.getContext('2d');
 
             //setAttribute
-            this._selectorCanvas.setAttribute("tabindex", 0);
+            this._selectorCanvas.setAttribute('tabindex', 0);
 
             //sharp lines
             this._selectorContext.translate(0.5, 0.5);
@@ -1008,7 +1008,6 @@ var Backbone = Backbone || ({
       //initkeyboard 
     _.extend(Pixelate.prototype, {
         initkeyboard: function() {
-
             var k = this;
             this._selectorCanvas.addEventListener('keydown', function (e) {
                 k.pixelatekey(e);
@@ -1063,30 +1062,27 @@ var Backbone = Backbone || ({
                 e = e || window.event;
                 this.resizeTop();
                 this.mask();
-                
             }
             else if(e.keyCode === this._resize.metaLeft && e.shiftKey) {
                 e = e || window.event;
                 this.resizeLeft();
                 this.mask();
-                
             }
             else if(e.keyCode === this._resize.metaRight && e.shiftKey) {
                 e = e || window.event;
                 this.resizeRight();
                 this.mask();
-                
             }
             else if(e.keyCode === this._resize.metaBottom && e.shiftKey) {
                 e = e || window.event;
                 this.resizeBottom();
                 this.mask();
-                
             }
             else {
                 return;
             }
-        }    
+        }
+            
     });
     //export
     window.pixelate = function (canvas, options) {

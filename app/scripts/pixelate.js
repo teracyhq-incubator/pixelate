@@ -249,10 +249,10 @@ var Backbone = Backbone || ({
             redo: 89,//ctrl + y
             pixelate: 13,//Enter
             move: {
-                'Top': 38,//Top
-                'Left': 39,//Left
-                'Right': 37,//Right
-                'Bottom': 40//Bottom
+                'top': 38,//top
+                'left': 39,//left
+                'right': 37,//right
+                'bottom': 40//bottom
             },
             resize: {
                 'metaTop': 38,//meta + up
@@ -261,6 +261,7 @@ var Backbone = Backbone || ({
                 'metaBottom': 40//meta + down
             }
         },
+        keyboardEnable: false,
         debug: false
     };
 
@@ -502,7 +503,9 @@ var Backbone = Backbone || ({
             this._pixelatedContext.webkitImageSmoothingEnabled = false;
             this._pixelatedContext.imageSmoothingEnabled = false;
 
-             //default keyboard            
+             //default keyboard
+            this._keyboardEnable = this.options.keyboardEnable;
+
             this._pixelate = this.options.keyboard.pixelate;
             this._resize = this.options.keyboard.resize;
             this._redo = this.options.keyboard.redo;
@@ -547,6 +550,8 @@ var Backbone = Backbone || ({
             this._pixelatedContext.imageSmoothingEnabled = false;
 
             // update default keyboard
+            this._keyboardEnable = this.options.keyboardEnable;
+            
             this._pixelate = this.options.keyboard.pixelate;
             this._resize = this.options.keyboard.resize;
             this._redo = this.options.keyboard.redo;
@@ -1016,7 +1021,8 @@ var Backbone = Backbone || ({
                 k.movekey(e);
                 k.resizekey(e);
             });
-            
+            this._keyboardEnable = true;
+
         },
         pixelatekey: function (e) {
             if(e.keyCode === this._pixelate) {
@@ -1037,19 +1043,19 @@ var Backbone = Backbone || ({
             }
         },
         movekey: function (e) {
-            if(e.keyCode === this._move.Top) {
+            if(e.keyCode === this._move.top) {
                 e = e || window.event;
                 this.move(0, -5);
             }
-            else if(e.keyCode === this._move.Right) {
+            else if(e.keyCode === this._move.right) {
                 e = e || window.event;
                 this.move(-5, 0);
             }
-            else if(e.keyCode === this._move.Bottom) {
+            else if(e.keyCode === this._move.bottom) {
                 e = e || window.event;
                 this.move(0, 5);
             }
-            else if(e.keyCode === this._move.Left) {
+            else if(e.keyCode === this._move.left) {
                 e = e || window.event;
                 this.move(5, 0);
             }

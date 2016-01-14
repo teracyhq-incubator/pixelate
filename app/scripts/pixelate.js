@@ -1014,7 +1014,7 @@ var Backbone = Backbone || ({
     _.extend(Pixelate.prototype, {
         initkeyboard: function() {
             var k = this;
-            this._selectorCanvas.addEventListener('keydown', function (e) {
+            this._$selectorCanvas.on('keydown', function (e) {
                 k.pixelatekey(e);
                 k.undokey(e);
                 k.redokey(e);
@@ -1088,7 +1088,7 @@ var Backbone = Backbone || ({
                 return;
             }
         }
-            
+             
     });
     //export
     window.pixelate = function (canvas, options) {

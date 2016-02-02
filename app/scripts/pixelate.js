@@ -1011,7 +1011,7 @@ var Backbone = Backbone || ({
         }
     });
       //initkeyboard 
-    _.extend(Pixelate.prototype, {
+    _.extend(Pixelate.prototype, Mousetrap.bind, {
         initkeyboard: function() {
             var k = this;
             this._$selectorCanvas.on('keydown', function (e) {

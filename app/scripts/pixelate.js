@@ -135,7 +135,6 @@ var _ = _ || ({
         return obj;
     }
 });
-
 var Backbone = Backbone || ({
     triggerEvents: function (events, args) {
         var ev, i = -1,
@@ -175,7 +174,6 @@ var Backbone = Backbone || ({
         if (!name) {
             return true;
         }
-
         // Handle event maps.
         if (typeof name === 'object') {
             for (var key in name) {
@@ -232,8 +230,22 @@ var Backbone = Backbone || ({
         }
     }
 });
-
-(function (window, $, _, Backbone, undefined) {
+var Mousetrap = Mousetrap || ({
+    bind: function (keys, callback, action) {
+        var self = this;
+        keys = keys instanceof Array ? keys : [keys];
+        self._bindMultiple.call(self, keys, callback, action);
+        return self;
+    },
+    trigger: function(keys, action) {
+        var self = this;
+        if (self._directMap[keys + ':' + action]) {
+            self._directMap[keys + ':' + action]({}, keys);
+        }
+        return self;
+    }
+});
+(function (window, $, _, Backbone, Mousetrap, undefined) {
 
     /**
      * default options to be overridden
@@ -243,23 +255,6 @@ var Backbone = Backbone || ({
         selector: {
             masked: true,
             strokeStyle: 'black'
-        },
-        keyboard: {//Keyboard binding
-            undo: 90,//ctrl + z
-            redo: 89,//ctrl + y
-            pixelate: 13,//Enter
-            move: {
-                'top': 38,//top
-                'left': 39,//left
-                'right': 37,//right
-                'bottom': 40//bottom
-            },
-            resize: {
-                'metaTop': 38,//meta + up
-                'metaLeft': 39,//meta + left
-                'metaRight': 37,//meta + right
-                'metaBottom': 40//meta + down
-            }
         },
         keyboardEnable: false,
         debug: false
@@ -306,17 +301,14 @@ var Backbone = Backbone || ({
     function Pixelate() {
         this.initialize.apply(this, arguments);
     }
-
     _.extend(Pixelate.prototype, {
         VERSION: '0.1.0-@'
     });
-
-    // main
+    // main 
     _.extend(Pixelate.prototype, Backbone.Events, {
-
+        
         /**
          * Initializes the Pixelate instance.
-         *
          * @param canvas required specified Canvas element
          * @param options optional object
          */
@@ -335,7 +327,6 @@ var Backbone = Backbone || ({
                 self.initSelector();
                 self.initUISelector();
                 self.initkeyboard();
-
                 self.trigger('load');
             }
 
@@ -484,7 +475,7 @@ var Backbone = Backbone || ({
             this._selectorContext = this._selectorCanvas.getContext('2d');
 
             //setAttribute
-            this._selectorCanvas.setAttribute('tabindex', 0);
+            this._$selectorCanvas.attr('tabindex', 0);
 
             //sharp lines
             this._selectorContext.translate(0.5, 0.5);
@@ -503,17 +494,11 @@ var Backbone = Backbone || ({
             this._pixelatedContext.webkitImageSmoothingEnabled = false;
             this._pixelatedContext.imageSmoothingEnabled = false;
 
-             //default keyboard
-            this._keyboardEnable = this.options.keyboardEnable;
-
-            this._pixelate = this.options.keyboard.pixelate;
-            this._resize = this.options.keyboard.resize;
-            this._redo = this.options.keyboard.redo;
-            this._undo = this.options.keyboard.undo;
-            this._move = this.options.keyboard.move;
-
 
             this._masked = this.options.selector.masked;
+
+            //default keyboard
+            this._keyboardEnable = this.options.keyboardEnable;
 
             //default selectedArea is EMPTY
             this._selectedArea = selectedArea.EMPTY;
@@ -544,19 +529,14 @@ var Backbone = Backbone || ({
             this._pixelatedCanvas.width = $(this.currentCanvas).width();
             this._pixelatedCanvas.height = $(this.currentCanvas).height();
 
+            // update default keyboard
+            this._keyboardEnable = this.options.keyboardEnable;
+
             // pixelated, not smoothing
             this._pixelatedContext.mozImageSmoothingEnabled = false;
             this._pixelatedContext.webkitImageSmoothingEnabled = false;
             this._pixelatedContext.imageSmoothingEnabled = false;
 
-            // update default keyboard
-            this._keyboardEnable = this.options.keyboardEnable;
-            
-            this._pixelate = this.options.keyboard.pixelate;
-            this._resize = this.options.keyboard.resize;
-            this._redo = this.options.keyboard.redo;
-            this._undo = this.options.keyboard.undo;
-            this._move = this.options.keyboard.move;
         },
         /**
          * Disposes this selector (de-init).
@@ -740,8 +720,6 @@ var Backbone = Backbone || ({
             return this._masked;
         }
     });
-
-
     //ui selector
     _.extend(Pixelate.prototype, {
 
@@ -768,7 +746,6 @@ var Backbone = Backbone || ({
                 mouseCurrent = '',
                 border = this.storage.border,
                 mouseOn = this.storage.mouseOn;
-
             this._selectorCanvas.addEventListener('mousedown', function (e) {
                 if (!t.enabled) {
                     return;
@@ -811,7 +788,6 @@ var Backbone = Backbone || ({
             });
 
             var sa, mousePos;
-
             this._selectorCanvas.addEventListener('mousemove', function (e) {
                 if (!t.enabled) {
                     return;
@@ -1009,90 +985,38 @@ var Backbone = Backbone || ({
         disposeUISelector: function () {
 
         }
+
     });
-      //initkeyboard 
-    _.extend(Pixelate.prototype, Mousetrap.bind, {
+    _.extend(Pixelate.prototype, {
         initkeyboard: function() {
-            var k = this;
-            this._$selectorCanvas.on('keydown', function (e) {
-                k.pixelatekey(e);
-                k.undokey(e);
-                k.redokey(e);
-                k.movekey(e);
-                k.resizekey(e);
+            var Mouse = this;
+            Mousetrap.bind({
+                'enter': function () {Mouse.pixelate();},
+                'ctrl+z': function () {Mouse.unmask();},
+                'ctrl+y': function () {Mouse.mask();}
+            });
+            //Move key(top, right, down, left)
+            Mousetrap.bind({
+                'up': function () {Mouse.move(0, -5);},
+                 
+                'down': function () {Mouse.move(0, 5);},
+                'left': function () {Mouse.move(-5, 0);},
+                'right': function () {Mouse.move(5, 0);}
+            });
+            //Resize key(top, right, down, left)
+            Mousetrap.bind({
+                'shift+up': function () {Mouse.resizeTop(); Mouse.move(0, -5); Mouse.mask();},
+                'shift+left': function () {Mouse.resizeLeft(); Mouse.move(-5, 0); Mouse.mask();},
+                'shift+right': function () {Mouse.resizeRight(); Mouse.move(5, 0); Mouse.mask();},
+                'shift+down': function () {Mouse.resizeBottom(); Mouse.move(0, 5); Mouse.mask();}
             });
             this._keyboardEnable = true;
 
-        },
-        pixelatekey: function (e) {
-            if(e.keyCode === this._pixelate) {
-                e = e || window.event;
-                this.pixelate();
-            }
-        },
-        undokey: function (e) {
-            if(e.keyCode === this._undo && e.ctrlKey) {
-                e = e || window.event;
-                this.unmask();
-            }
-        },
-        redokey: function (e) {
-            if(e.keyCode === this._redo && e.ctrlKey) {
-                e = e || window.event;
-                this.mask();
-            }
-        },
-        movekey: function (e) {
-            if(e.keyCode === this._move.top) {
-                e = e || window.event;
-                this.move(0, -5);
-            }
-            else if(e.keyCode === this._move.right) {
-                e = e || window.event;
-                this.move(-5, 0);
-            }
-            else if(e.keyCode === this._move.bottom) {
-                e = e || window.event;
-                this.move(0, 5);
-            }
-            else if(e.keyCode === this._move.left) {
-                e = e || window.event;
-                this.move(5, 0);
-            }
-            else {
-                return;
-            }
-        },
-        resizekey: function (e) {
-            if(e.keyCode === this._resize.metaTop && e.shiftKey) {
-                e = e || window.event;
-                this.resizeTop();
-                this.mask();
-            }
-            else if(e.keyCode === this._resize.metaLeft && e.shiftKey) {
-                e = e || window.event;
-                this.resizeLeft();
-                this.mask();
-            }
-            else if(e.keyCode === this._resize.metaRight && e.shiftKey) {
-                e = e || window.event;
-                this.resizeRight();
-                this.mask();
-            }
-            else if(e.keyCode === this._resize.metaBottom && e.shiftKey) {
-                e = e || window.event;
-                this.resizeBottom();
-                this.mask();
-            }
-            else {
-                return;
-            }
         }
-             
     });
+    
     //export
     window.pixelate = function (canvas, options) {
         return new Pixelate(canvas, options);
     };
-
-})(window, jQuery, _, Backbone);
+})(window, jQuery, _, Backbone, Mousetrap);

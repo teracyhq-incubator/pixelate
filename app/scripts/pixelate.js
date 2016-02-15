@@ -236,13 +236,6 @@ var Mousetrap = Mousetrap || ({
         keys = keys instanceof Array ? keys : [keys];
         self._bindMultiple.call(self, keys, callback, action);
         return self;
-    },
-    trigger: function(keys, action) {
-        var self = this;
-        if (self._directMap[keys + ':' + action]) {
-            self._directMap[keys + ':' + action]({}, keys);
-        }
-        return self;
     }
 });
 (function (window, $, _, Backbone, Mousetrap, undefined) {
@@ -998,14 +991,14 @@ var Mousetrap = Mousetrap || ({
             //Move key(top, right, down, left)
             Mousetrap.bind({
                 'up': function () {Mouse.move(0, -5);},
-                 
+
                 'down': function () {Mouse.move(0, 5);},
                 'left': function () {Mouse.move(-5, 0);},
                 'right': function () {Mouse.move(5, 0);}
             });
             //Resize key(top, right, down, left)
             Mousetrap.bind({
-                'shift+up': function () {Mouse.resizeTop(); Mouse.move(0, -5); Mouse.mask();},
+                'shift+up': function () {Mouse.resizeTop();  Mouse.mask(); Mouse.move(0, -5);},
                 'shift+left': function () {Mouse.resizeLeft(); Mouse.move(-5, 0); Mouse.mask();},
                 'shift+right': function () {Mouse.resizeRight(); Mouse.move(5, 0); Mouse.mask();},
                 'shift+down': function () {Mouse.resizeBottom(); Mouse.move(0, 5); Mouse.mask();}

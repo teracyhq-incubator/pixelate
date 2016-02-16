@@ -998,7 +998,7 @@ var Mousetrap = Mousetrap || ({
             });
             //Resize key(top, right, down, left)
             Mousetrap.bind({
-                'shift+up': function () {Mouse.resizeTop();  Mouse.mask(); Mouse.move(0, -5);},
+                'shift+up': function () {Mouse.resizeTop(); Mouse.move(0, -5); Mouse.mask();},
                 'shift+left': function () {Mouse.resizeLeft(); Mouse.move(-5, 0); Mouse.mask();},
                 'shift+right': function () {Mouse.resizeRight(); Mouse.move(5, 0); Mouse.mask();},
                 'shift+down': function () {Mouse.resizeBottom(); Mouse.move(0, 5); Mouse.mask();}

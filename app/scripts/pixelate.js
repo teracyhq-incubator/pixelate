@@ -980,28 +980,29 @@ var Mousetrap = Mousetrap || ({
         }
 
     });
+    // keyboard binding
     _.extend(Pixelate.prototype, {
         initkeyboard: function() {
-            var Mouse = this;
+            var self = this;
             Mousetrap.bind({
-                'enter': function () {Mouse.pixelate();},
-                'ctrl+z': function () {Mouse.unmask();},
-                'ctrl+y': function () {Mouse.mask();}
+                'enter': function () {self.pixelate();},
+                'ctrl+z': function () {self.unmask();},
+                'ctrl+y': function () {self.mask();}
             });
             //Move key(top, right, down, left)
             Mousetrap.bind({
-                'up': function () {Mouse.move(0, -5);},
+                'up': function () {self.move(0, -5);},
 
-                'down': function () {Mouse.move(0, 5);},
-                'left': function () {Mouse.move(-5, 0);},
-                'right': function () {Mouse.move(5, 0);}
+                'down': function () {self.move(0, 5);},
+                'left': function () {self.move(-5, 0);},
+                'right': function () {self.move(5, 0);}
             });
             //Resize key(top, right, down, left)
             Mousetrap.bind({
-                'shift+up': function () {Mouse.resizeTop(); Mouse.move(0, -5); Mouse.mask();},
-                'shift+left': function () {Mouse.resizeLeft(); Mouse.move(-5, 0); Mouse.mask();},
-                'shift+right': function () {Mouse.resizeRight(); Mouse.move(5, 0); Mouse.mask();},
-                'shift+down': function () {Mouse.resizeBottom(); Mouse.move(0, 5); Mouse.mask();}
+                'shift+up': function () {self.resizeTop(); self.move(0, -5); self.mask();},
+                'shift+left': function () {self.resizeLeft(); self.move(-5, 0); self.mask();},
+                'shift+right': function () {self.resizeRight(); self.move(5, 0); self.mask();},
+                'shift+down': function () {self.resizeBottom(); self.move(0, 5); self.mask();}
             });
             this._keyboardEnable = true;
 

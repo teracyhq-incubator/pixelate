@@ -1,7 +1,7 @@
 pixelate
 ========
 
-[![Build Status](https://travis-ci.org/teracy-official/pixelate.svg?branch=develop)](https://travis-ci.org/teracy-official/pixelate)  
+[![Build Status](https://travis-ci.org/teracyhq/pixelate.svg?branch=develop)](https://travis-ci.org/teracyhq/pixelate)  
 
 Pixelate an image's canvas just by select.
 
@@ -13,11 +13,11 @@ preview what is changing.
 
 Here are the sample of what this pixelate library can do:
 
-![State 1](https://raw.githubusercontent.com/teracy-official/pixelate/develop/app/assets/state-1.png)
-![State 2](https://raw.githubusercontent.com/teracy-official/pixelate/develop/app/assets/state-2.png)
+![State 1](https://raw.githubusercontent.com/teracyhq/pixelate/develop/app/assets/state-1.png)
+![State 2](https://raw.githubusercontent.com/teracyhq/pixelate/develop/app/assets/state-2.png)
 
 
-Checkout this demo for a closer look: http://teracy-official.github.io/pixelate/
+Checkout this demo for a closer look: http://teracyhq.github.io/pixelate/
 
 Usage
 =====

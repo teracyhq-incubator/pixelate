@@ -7,7 +7,7 @@
  * var pixelateInstance = pixelate(canvas, [options])
  *
  * options by default:
- * {
+ * {    
  *   radius: 10,
  *   selector: {
  *     masked: true, // masked on select

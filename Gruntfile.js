@@ -21,7 +21,8 @@ module.exports = function (grunt) {
         // Project settings
         config: {
             // Configurable paths
-            app: 'app',
+            app: 'src',
+            demo: 'docs',
             dist: 'dist'
         },
 
@@ -31,8 +32,15 @@ module.exports = function (grunt) {
                 files: ['bower.json'],
                 tasks: ['bowerInstall']
             },
-            js: {
-                files: ['<%= config.app %>/scripts/{,*/}*.js'],
+            jsSrc: {
+                files: ['<%= config.app %>/{,*/}*.js'],
+                tasks: ['jshint', 'copy:jsDemo'],
+                options: {
+                    livereload: true
+                }
+            },
+            jsDemo: {
+                files: ['<%= config.app %>/{,*/}*.js'],
                 tasks: ['jshint'],
                 options: {
                     livereload: true
@@ -46,7 +54,7 @@ module.exports = function (grunt) {
                 files: ['Gruntfile.js']
             },
             styles: {
-                files: ['<%= config.app %>/styles/{,*/}*.css'],
+                files: ['<%= config.demo %>/styles/{,*/}*.css'],
                 tasks: ['newer:copy:styles', 'autoprefixer']
             },
             livereload: {
@@ -54,9 +62,9 @@ module.exports = function (grunt) {
                     livereload: '<%= connect.options.livereload %>'
                 },
                 files: [
-                    '<%= config.app %>/{,*/}*.html',
+                    '<%= config.demo %>/{,*/}*.html',
                     '.tmp/styles/{,*/}*.css',
-                    '<%= config.app %>/images/{,*/}*'
+                    '<%= config.demo %>/images/{,*/}*'
                 ]
             }
         },
@@ -74,7 +82,7 @@ module.exports = function (grunt) {
                     open: true,
                     base: [
                         '.tmp',
-                        '<%= config.app %>'
+                        '<%= config.demo %>'
                     ]
                 }
             },
@@ -84,7 +92,7 @@ module.exports = function (grunt) {
                     base: [
                         '.tmp',
                         'test',
-                        '<%= config.app %>'
+                        '<%= config.demo %>'
                     ]
                 }
             },
@@ -120,8 +128,8 @@ module.exports = function (grunt) {
             },
             all: [
                 'Gruntfile.js',
-                '<%= config.app %>/scripts/{,*/}*.js',
-                '!<%= config.app %>/scripts/vendor/*',
+                '<%= config.src %>/scripts/{,*/}*.js',
+                '!<%= config.src %>/scripts/vendor/*',
                 'test/spec/{,*/}*.js'
             ]
         },
@@ -154,8 +162,8 @@ module.exports = function (grunt) {
         // Automatically inject Bower components into the HTML file
         bowerInstall: {
             app: {
-                src: ['<%= config.app %>/index.html'],
-                ignorePath: '<%= config.app %>/'
+                src: ['<%= config.demo %>/index.html'],
+                ignorePath: '<%= config.demo %>/'
             }
         },
 
@@ -181,7 +189,7 @@ module.exports = function (grunt) {
             options: {
                 dest: '<%= config.dist %>'
             },
-            html: '<%= config.app %>/index.html'
+            html: '<%= config.demo %>/index.html'
         },
 
         // Performs rewrites based on rev and the useminPrepare configuration
@@ -198,7 +206,7 @@ module.exports = function (grunt) {
             dist: {
                 files: [{
                     expand: true,
-                    cwd: '<%= config.app %>/images',
+                    cwd: '<%= config.demo %>/images',
                     src: '{,*/}*.{gif,jpeg,jpg,png}',
                     dest: '<%= config.dist %>/images'
                 }]
@@ -209,9 +217,9 @@ module.exports = function (grunt) {
             dist: {
                 files: [{
                     expand: true,
-                    cwd: '<%= config.app %>/images',
+                    cwd: '<%= config.demo %>/images',
                     src: '{,*/}*.svg',
-                    dest: '<%= config.dist %>/images'
+                    dest: '<%= config.demo %>/images'
                 }]
             }
         },
@@ -269,7 +277,7 @@ module.exports = function (grunt) {
                 files: [{
                     expand: true,
                     dot: true,
-                    cwd: '<%= config.app %>',
+                    cwd: '<%= config.demo %>',
                     dest: '<%= config.dist %>',
                     src: [
                         '*.{ico,png,txt}',
@@ -279,6 +287,13 @@ module.exports = function (grunt) {
                         'styles/fonts/{,*/}*.*'
                     ]
                 }]
+            },
+            jsDemo: {
+                expand: true,
+                dot: true,
+                cwd: '<%= config.app %>/',
+                dest: '<%= config.demo %>/scripts',
+                src: '{,*/}*.js'
             },
             styles: {
                 expand: true,

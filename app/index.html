@@ -33,7 +33,6 @@
     <p>Image Author: <a href="http://www.public-domain-photos.com/authors/Jon-Sullivan">Jon Sullivan</a><br><br></p>
 
     <h2>Init pixelate by canvas</h2>
-    
     <div class="pixelate-container">
       <canvas id="main-canvas"></canvas>
       <canvas id="debug-canvas"></canvas>
@@ -43,6 +42,7 @@
     <img id="img-test" src="assets/death-valley-sand-dunes.jpg" alt="not apply" />
     </div>
     <h2>Init pixelate by just image src</h2>
+
     <!-- build:js scripts/vendor.js -->
     <!-- bower:js -->
     <script src="bower_components/jquery/dist/jquery.js"></script>
@@ -54,7 +54,6 @@
     <script src="bower_components/blob/Blob.js"></script>
     <script src="bower_components/canvas-toBlob/canvas-toBlob.js"></script>
     <script src="bower_components/mousetrap/mousetrap.js"></script>
-    <script src="bower_components/mousetrap/plugins/bind-dictionary/mousetrap-bind-dictionary.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
@@ -70,7 +69,7 @@
         e = o.createElement(i);
         r = o.getElementsByTagName(i)[0];
         e.src = 'https://www.google-analytics.com/analytics.js';
-        r.parentNode.insertBefore(e, r)
+        r.parentNode.insertBefore(e, r);
       }(window, document, 'script', 'ga'));
       ga('create', 'UA-XXXXX-X');
       ga('send', 'pageview');

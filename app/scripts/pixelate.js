@@ -484,7 +484,7 @@ var Mousetrap = Mousetrap || ({
 
             // pixelated, not smoothing
             this._pixelatedContext.mozImageSmoothingEnabled = false;
-            this._pixelatedContext.webkitImageSmoothingEnabled = false;
+            //this._pixelatedContext.webkitImageSmoothingEnabled = false;
             this._pixelatedContext.imageSmoothingEnabled = false;
 
 
@@ -637,8 +637,7 @@ var Mousetrap = Mousetrap || ({
                 pixelatedHeight = currentCanvas.height * pixelatedRatio;
 
             this._pixelatedContext.drawImage(this.currentCanvas, 0, 0, pixelatedWidth, pixelatedHeight);
-            this._pixelatedContext.drawImage(this._pixelatedCanvas, 0, 0, pixelatedWidth, pixelatedHeight,
-                1, 1, $(currentCanvas).width(), $(currentCanvas).height());
+            this._pixelatedContext.drawImage(this._pixelatedCanvas, 0, 0, pixelatedWidth, pixelatedHeight, 1, 1, $(currentCanvas).width(), $(currentCanvas).height());
 
             if (this.options.debug) {
                 //debugging
@@ -984,28 +983,24 @@ var Mousetrap = Mousetrap || ({
     _.extend(Pixelate.prototype, {
         initkeyboard: function() {
             var self = this;
-            Mousetrap.bind({
-                'enter': function () {self.pixelate();},
-                'ctrl+z': function () {self.unmask();},
-                'ctrl+y': function () {self.mask();}
-            });
-            //Move key(top, right, down, left)
-            Mousetrap.bind({
-                'up': function () {self.move(0, -5);},
-
-                'down': function () {self.move(0, 5);},
-                'left': function () {self.move(-5, 0);},
-                'right': function () {self.move(5, 0);}
-            });
-            //Resize key(top, right, down, left)
-            Mousetrap.bind({
-                'shift+up': function () {self.resizeTop(); self.move(0, -5); self.mask();},
-                'shift+left': function () {self.resizeLeft(); self.move(-5, 0); self.mask();},
-                'shift+right': function () {self.resizeRight(); self.move(5, 0); self.mask();},
-                'shift+down': function () {self.resizeBottom(); self.move(0, 5); self.mask();}
-            });
+            var mousetrap = new Mousetrap();
             this._keyboardEnable = true;
 
+            mousetrap.bind('enter', function () {self.pixelate();});
+            mousetrap.bind('ctrl+z', function () {self.unmask();});
+            mousetrap.bind('ctrl+y', function () {self.masked();});
+
+            //Move key(top, right, down, left)
+            mousetrap.bind('up', function () {self.move(0, -5);});
+            mousetrap.bind('down', function () {self.move(0, 5);});
+            mousetrap.bind('left', function () {self.move(-5, 0);});
+            mousetrap.bind('right', function () {self.move(5, 0);});
+
+            //Resize key(top, right, down, left)
+            mousetrap.bind('shift+up', function () {self.resizeTop(); self.move(0, -5); self.mask();});
+            mousetrap.bind('shift+left', function () {self.resizeLeft(); self.move(-5, 0); self.mask();});
+            mousetrap.bind('shift+right', function () {self.resizeRight(); self.move(5, 0); self.mask();});
+            mousetrap.bind('shift+down', function () {self.resizeBottom(); self.move(0, 5); self.mask();});
         }
     });
     

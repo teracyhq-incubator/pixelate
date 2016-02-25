@@ -983,24 +983,28 @@ var Mousetrap = Mousetrap || ({
     _.extend(Pixelate.prototype, {
         initkeyboard: function() {
             var self = this;
-            var mousetrap = new Mousetrap();
             this._keyboardEnable = true;
-
-            mousetrap.bind('enter', function () {self.pixelate();});
-            mousetrap.bind('ctrl+z', function () {self.unmask();});
-            mousetrap.bind('ctrl+y', function () {self.masked();});
+            this._$selectorCanvas.on('keydown', function (e) {
+                self.mousetrap(e);
+            });
+        },
+        mousetrap: function () {
+            var self = this;
+            Mousetrap.bind('enter', function () {self.pixelate();});
+            Mousetrap.bind('ctrl+z', function () {self.unmask();});
+            Mousetrap.bind('ctrl+y', function () {self.masked();});
 
             //Move key(top, right, down, left)
-            mousetrap.bind('up', function () {self.move(0, -5);});
-            mousetrap.bind('down', function () {self.move(0, 5);});
-            mousetrap.bind('left', function () {self.move(-5, 0);});
-            mousetrap.bind('right', function () {self.move(5, 0);});
+            Mousetrap.bind('up', function () {self.move(0, -5);});
+            Mousetrap.bind('down', function () {self.move(0, 5);});
+            Mousetrap.bind('left', function () {self.move(-5, 0);});
+            Mousetrap.bind('right', function () {self.move(5, 0);});
 
             //Resize key(top, right, down, left)
-            mousetrap.bind('shift+up', function () {self.resizeTop(); self.move(0, -5); self.mask();});
-            mousetrap.bind('shift+left', function () {self.resizeLeft(); self.move(-5, 0); self.mask();});
-            mousetrap.bind('shift+right', function () {self.resizeRight(); self.move(5, 0); self.mask();});
-            mousetrap.bind('shift+down', function () {self.resizeBottom(); self.move(0, 5); self.mask();});
+            Mousetrap.bind('shift+up', function () {self.resizeTop(); self.move(0, -5); self.mask();});
+            Mousetrap.bind('shift+left', function () {self.resizeLeft(); self.move(-5, 0); self.mask();});
+            Mousetrap.bind('shift+right', function () {self.resizeRight(); self.move(5, 0); self.mask();});
+            Mousetrap.bind('shift+down', function () {self.resizeBottom(); self.move(0, 5); self.mask();});
         }
     });
     

@@ -707,7 +707,6 @@ var Mousetrap = Mousetrap || ({
             if(!this.isKeyboardEnabled()) {
                 return this;
             }
-            var self = this;
             this._keyboardEnabled = false;
             this._$selectorCanvas.off('keydown').keydown(false);
             this.trigger('keyboardDisable');

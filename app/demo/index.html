@@ -213,6 +213,42 @@ pxl.move(10, 20);
                             </div>
                         </div>
                         <div>
+                            <h4>keyboardEnable()</h4>
+                            <p>
+                                Pixelates, Moves, Masks, Unmasks, Resizes the selected area and apply to the canvas with keyboard
+                            </p>
+                            <div class="bs-example">
+                                <p><br><a onclick="Main.apiKeyboardEnable(); return false;" href="#" class="btn btn-default pull-right">Try this</a></p>
+                            </div>
+                            <div class="highlight">
+                                <pre>
+                                    <code>
+var pxl = pixelate(canvas);
+...
+pxl.keyboardEnabled();
+                                    </code>
+                                </pre>
+                            </div>
+                        </div>
+                        <div>
+                            <h4>keyboardDisable()</h4>
+                            <p>
+                                Disable Pixelates, Moves, Masks, Unmasks, Resizes the selected area and apply to the canvas 
+                            </p>
+                            <div class="bs-example">
+                                <p><br><a onclick="Main.apiKeyboardDisable(); return false;" href="#" class="btn btn-default pull-right">Try this</a></p>
+                            </div>
+                            <div class="highlight">
+                                <pre>
+                                    <code>
+var pxl = pixelate(canvas);
+...
+pxl.keyboardDisabled();
+                                    </code>
+                                </pre>
+                            </div>
+                        </div>
+                        <div>
                             <h4>originalCanvas</h4>
                             <p>
                                 Gets the original canvas specified when being initialized.

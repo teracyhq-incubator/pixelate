@@ -249,7 +249,7 @@ var Mousetrap = Mousetrap || ({
             masked: true,
             strokeStyle: 'black'
         },
-        keyboardEnabled: false,
+        keyboardEnabled: true,
         debug: false
     };
 
@@ -703,6 +703,32 @@ var Mousetrap = Mousetrap || ({
             this.trigger('unmask', se);
             return this;
         },
+        keyboardDisable: function () {
+            if(!this.isKeyboardEnabled()) {
+                return this;
+            }
+            var self = this;
+            this._keyboardEnabled = false;
+            this._$selectorCanvas.off('keydown').keydown(false);
+            this.trigger('keyboardDisable');
+            return this;
+        },
+        keyboardEnable: function () {
+            var self = this;
+            this._$selectorCanvas.off('keydown').on('keydown', function (e) {
+                e = e || window.event;
+                if (e && e.preventDefault) {
+                    e.preventDefault();
+                } else {
+                    window.event.returnValue = false;
+                }
+
+                self.mousetrap(e);
+            });
+            this._keyboardEnabled = true;
+            this.trigger('keyboardEnable');
+            return this;
+        },
         /**
          * Checks to see if the selected area is masked or not.
          *
@@ -983,23 +1009,23 @@ var Mousetrap = Mousetrap || ({
         }
 
     });
-    // keyboard binding
+    //Keyboard binding
     _.extend(Pixelate.prototype, {
-        initkeyboard: function() {
+        initkeyboard: function () {
             if(this.isKeyboardEnabled) {
                 var self = this;
                 this._$selectorCanvas.on('keydown', function (e) {
                     e = e || window.event;
-                    if ( e && e.preventDefault) {
+                    if (e && e.preventDefault) {
                         e.preventDefault();
-                    }
-                    else{
+                    } else {
                         window.event.returnValue = false;
                     }
-                
+                    
                     self.mousetrap(e);
-                    return false;
                 });
+            } else {
+                // return false;
             }
         },
         mousetrap: function () {

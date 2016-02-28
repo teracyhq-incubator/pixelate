@@ -48,6 +48,7 @@
         var self = this,
             timeout;
         Main.mainPixelate = pixelate(canvas, {
+          keyboardEnabled: true,
           debug: false,
           selector: {
             masked: true,
@@ -77,16 +78,22 @@
                           logs.append('Clear selected area');
                         })
                         .on('mask', function(radius, selectedArea) {
-                          logs.append('Mask selected area with radius: <b>' + radius + '</b><br>')
+                          logs.append('Mask selected area with radius: <b>' + radius + '</b><br>');
                         })
                         .on('unmask', function(radius, selectedArea) {
                           logs.append('Unmask selected area<br>');
                         })
                         .on('pixelate', function(radius, selectedArea) {
-                          logs.append('Pixelate selected area<br>')
+                          logs.append('Pixelate selected area<br>');
                         })
                         .on('move', function(x, y) {
                           logs.append('Moved to: (<b>' + x + '</b>, <b>' + y + '</b>)<br>')
+                        })
+                        .on('keyboardEnable', function() {
+                          logs.append('Enabled keyboard binding');
+                        })
+                        .on('keyboardDisable', function() {
+                          logs.append('Disabled keyboard binding');
                         })
                         ;
 
@@ -203,8 +210,16 @@
       apiDispose: function() {
         if (!Main.mainPixelate) return;
         Main.mainPixelate.dispose();
-      }
-    }
+      },
+      apiKeyboardEnable: function() {
+        if (!Main.mainPixelate) return;
+        Main.mainPixelate.keyboardEnable();
+      },
+      apiKeyboardDisable: function() {
+          if (!Main.mainPixelate) return;
+          Main.mainPixelate.keyboardDisable();
+        }
+      };  
     Dropzone.options.uploadForm = {
       init: function() {
         this.on("addedfile", function(file) {

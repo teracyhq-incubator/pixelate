@@ -40,7 +40,14 @@
         }).
         on('dispose', function () {
             console.log('disposed');
-        });
+        }).
+        on('keyboardEnable', function() {
+            console.log('Enabled keyboard binding');
+        }).
+        on('keyboardDisable', function() {
+            console.log('Disabled keyboard binding');
+        })
+        ;
     }
 
     $(function () {

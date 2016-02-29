@@ -90,10 +90,10 @@
                           logs.append('Moved to: (<b>' + x + '</b>, <b>' + y + '</b>)<br>')
                         })
                         .on('keyboardEnable', function() {
-                          logs.append('Enabled keyboard binding');
+                          logs.append('Enabled keyboard binding<br>');
                         })
                         .on('keyboardDisable', function() {
-                          logs.append('Disabled keyboard binding');
+                          logs.append('Disabled keyboard binding<br>');
                         })
                         ;
 

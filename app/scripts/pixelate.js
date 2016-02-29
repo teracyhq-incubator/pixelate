@@ -707,23 +707,13 @@ var Mousetrap = Mousetrap || ({
             if(!this.isKeyboardEnabled()) {
                 return this;
             }
-            this._keyboardEnabled = false;
             this._$selectorCanvas.off('keydown').keydown(false);
+            this._keyboardEnabled = false;
             this.trigger('keyboardDisable');
             return this;
         },
         keyboardEnable: function () {
-            var self = this;
-            this._$selectorCanvas.off('keydown').on('keydown', function (e) {
-                e = e || window.event;
-                if (e && e.preventDefault) {
-                    e.preventDefault();
-                } else {
-                    window.event.returnValue = false;
-                }
-
-                self.mousetrap(e);
-            });
+            this.initkeyboard();
             this._keyboardEnabled = true;
             this.trigger('keyboardEnable');
             return this;
@@ -736,7 +726,7 @@ var Mousetrap = Mousetrap || ({
         isMasked: function () {
             return this._masked;
         },
-
+        
         isKeyboardEnabled: function () {
             return this._keyboardEnabled;
         }
@@ -1013,7 +1003,7 @@ var Mousetrap = Mousetrap || ({
         initkeyboard: function () {
             if(this.isKeyboardEnabled) {
                 var self = this;
-                this._$selectorCanvas.on('keydown', function (e) {
+                this._$selectorCanvas.off('keydown').on('keydown', function (e) {
                     e = e || window.event;
                     if (e && e.preventDefault) {
                         e.preventDefault();
@@ -1024,7 +1014,7 @@ var Mousetrap = Mousetrap || ({
                     self.mousetrap(e);
                 });
             } else {
-                // return false;
+                return false;
             }
         },
         mousetrap: function () {

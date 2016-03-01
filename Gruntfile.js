@@ -64,7 +64,7 @@ module.exports = function (grunt) {
         // The actual grunt server settings
         connect: {
             options: {
-                port: 9000,
+                port: process.env.PORT || 9000,
                 livereload: 35729,
                 // Change this to '0.0.0.0' to access the server from outside
                 hostname: '0.0.0.0' //access from host to vagrant box
@@ -90,6 +90,7 @@ module.exports = function (grunt) {
             },
             dist: {
                 options: {
+                    port:  process.env.PORT || 9000,
                     open: true,
                     base: '<%= config.dist %>',
                     livereload: false

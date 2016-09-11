@@ -48,6 +48,7 @@
         var self = this,
             timeout;
         Main.mainPixelate = pixelate(canvas, {
+          keyboardEnabled: true,
           debug: false,
           selector: {
             masked: true,
@@ -87,6 +88,18 @@
                         })
                         .on('move', function(x, y) {
                           logs.append('Moved to: (<b>' + x + '</b>, <b>' + y + '</b>)<br>')
+                        })
+                        .on('keyboard:enable', function() {
+                          logs.append('keyboard:enabled<br>');
+                        })
+                        .on('keyboard:enabled', function() {
+                          logs.append('keyboard is enabled<br>');
+                        })
+                        .on('keyboard:disable', function() {
+                          logs.append('keyboard:disabled<br>');
+                        })
+                        .on('keyboard:disabled', function() {
+                          logs.append('keyboard is disabled<br>');
                         })
                         ;
 
@@ -203,6 +216,14 @@
       apiDispose: function() {
         if (!Main.mainPixelate) return;
         Main.mainPixelate.dispose();
+      },
+      apiEnableKeyboard: function() {
+        if (!Main.mainPixelate) return;
+        Main.mainPixelate.enableKeyboard();
+      },
+      apiDisableKeyboard: function() {
+          if (!Main.mainPixelate) return;
+          Main.mainPixelate.disableKeyboard();
       }
     }
     Dropzone.options.uploadForm = {

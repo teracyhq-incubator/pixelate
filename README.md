@@ -17,7 +17,21 @@ Here are the sample of what this pixelate library can do:
 ![State 2](https://raw.githubusercontent.com/teracyhq/pixelate/develop/app/assets/state-2.png)
 
 
-Checkout this demo for a closer look: http://teracyhq.github.io/pixelate/
+Demo
+====
+
+To run it on your local machine, please follow this steps:
+
+```
+$ git clone https://github.com/teracyhq-incubator/pixelate.git
+$ cd pixelate/
+$ npm install
+$ grunt serve
+
+```
+
+Online demo can be found at http://teracyhq.github.io/pixelate/
+
 
 Usage
 =====

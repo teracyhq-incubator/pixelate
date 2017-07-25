@@ -17,6 +17,18 @@ Here are the sample of what this pixelate library can do:
 ![State 2](https://raw.githubusercontent.com/teracyhq/pixelate/develop/app/assets/state-2.png)
 
 
+Getting Started
+===============
+
+To get `pixelate` works, make sure to include:
+
+    - dist/pixelate.min.css
+    - dist/jquery.min.js
+    - dist/pixelate.min.js
+
+Check out the [example file](app/example.html) for correct usage.
+
+
 Demo
 ====
 
@@ -30,7 +42,9 @@ $ grunt serve
 
 ```
 
-Online demo can be found at http://teracyhq.github.io/pixelate/
+Then open http://0.0.0.0:9000/.
+
+Online demo can be found at http://teracyhq.github.io/pixelate/.
 
 
 Usage

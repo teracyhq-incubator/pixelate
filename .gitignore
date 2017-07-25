@@ -1,6 +1,6 @@
 node_modules
 npm-debug.log
-dist
+build
 .tmp
 .sass-cache
 app/bower_components
@@ -8,3 +8,4 @@ test/bower_components
 
 *.iml
 .idea/
+.DS_Store

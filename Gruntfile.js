@@ -22,6 +22,7 @@ module.exports = function (grunt) {
         config: {
             // Configurable paths
             app: 'app',
+            build: 'build',
             dist: 'dist'
         },
 
@@ -88,11 +89,11 @@ module.exports = function (grunt) {
                     ]
                 }
             },
-            dist: {
+            build: {
                 options: {
                     port:  process.env.PORT || 9000,
                     open: true,
-                    base: '<%= config.dist %>',
+                    base: '<%= config.build %>',
                     livereload: false
                 }
             }
@@ -100,16 +101,17 @@ module.exports = function (grunt) {
 
         // Empties folders to start fresh
         clean: {
-            dist: {
+            build: {
                 files: [{
                     dot: true,
                     src: [
                         '.tmp',
-                        '<%= config.dist %>/*',
-                        '!<%= config.dist %>/.git*'
+                        '<%= config.build %>/*',
+                        '!<%= config.build %>/.git*'
                     ]
                 }]
             },
+            dist: '<%= config.dist %>/*',
             server: '.tmp'
         },
 
@@ -142,7 +144,7 @@ module.exports = function (grunt) {
             options: {
                 browsers: ['last 1 version']
             },
-            dist: {
+            build: {
                 files: [{
                     expand: true,
                     cwd: '.tmp/styles/',
@@ -162,14 +164,14 @@ module.exports = function (grunt) {
 
         // Renames files for browser caching purposes
         rev: {
-            dist: {
+            build: {
                 files: {
                     src: [
-                        '<%= config.dist %>/scripts/{,*/}*.js',
-                        '<%= config.dist %>/styles/{,*/}*.css',
-                        '<%= config.dist %>/images/{,*/}*.*',
-                        '<%= config.dist %>/styles/fonts/{,*/}*.*',
-                        '<%= config.dist %>/*.{ico,png}'
+                        '<%= config.build %>/scripts/{,*/}*.js',
+                        '<%= config.build %>/styles/{,*/}*.css',
+                        '<%= config.build %>/images/{,*/}*.*',
+                        '<%= config.build %>/styles/fonts/{,*/}*.*',
+                        '<%= config.build %>/*.{ico,png}'
                     ]
                 }
             }
@@ -180,7 +182,7 @@ module.exports = function (grunt) {
         // additional tasks can operate on them
         useminPrepare: {
             options: {
-                dest: '<%= config.dist %>'
+                dest: '<%= config.build %>'
             },
             html: '<%= config.app %>/index.html'
         },
@@ -188,37 +190,37 @@ module.exports = function (grunt) {
         // Performs rewrites based on rev and the useminPrepare configuration
         usemin: {
             options: {
-                assetsDirs: ['<%= config.dist %>', '<%= config.dist %>/images']
+                assetsDirs: ['<%= config.build %>', '<%= config.build %>/images']
             },
-            html: ['<%= config.dist %>/{,*/}*.html'],
-            css: ['<%= config.dist %>/styles/{,*/}*.css']
+            html: ['<%= config.build %>/{,*/}*.html'],
+            css: ['<%= config.build %>/styles/{,*/}*.css']
         },
 
-        // The following *-min tasks produce minified files in the dist folder
+        // The following *-min tasks produce minified files in the build folder
         imagemin: {
-            dist: {
+            build: {
                 files: [{
                     expand: true,
                     cwd: '<%= config.app %>/images',
                     src: '{,*/}*.{gif,jpeg,jpg,png}',
-                    dest: '<%= config.dist %>/images'
+                    dest: '<%= config.build %>/images'
                 }]
             }
         },
 
         svgmin: {
-            dist: {
+            build: {
                 files: [{
                     expand: true,
                     cwd: '<%= config.app %>/images',
                     src: '{,*/}*.svg',
-                    dest: '<%= config.dist %>/images'
+                    dest: '<%= config.build %>/images'
                 }]
             }
         },
 
         htmlmin: {
-            dist: {
+            build: {
                 options: {
                     collapseBooleanAttributes: true,
                     collapseWhitespace: true,
@@ -231,9 +233,9 @@ module.exports = function (grunt) {
                 },
                 files: [{
                     expand: true,
-                    cwd: '<%= config.dist %>',
+                    cwd: '<%= config.build %>',
                     src: '{,*/}*.html',
-                    dest: '<%= config.dist %>'
+                    dest: '<%= config.build %>'
                 }]
             }
         },
@@ -241,37 +243,34 @@ module.exports = function (grunt) {
         // By default, your `index.html`'s <!-- Usemin block --> will take care of
         // minification. These next options are pre-configured if you do not wish
         // to use the Usemin blocks.
-        // cssmin: {
-        //     dist: {
-        //         files: {
-        //             '<%= config.dist %>/styles/main.css': [
-        //                 '.tmp/styles/{,*/}*.css',
-        //                 '<%= config.app %>/styles/{,*/}*.css'
-        //             ]
-        //         }
-        //     }
-        // },
-        // uglify: {
-        //     dist: {
-        //         files: {
-        //             '<%= config.dist %>/scripts/scripts.js': [
-        //                 '<%= config.dist %>/scripts/scripts.js'
-        //             ]
-        //         }
-        //     }
-        // },
+        cssmin: {
+            dist: {
+                files: {
+                    '<%= config.dist %>/pixelate.min.css': [
+                        '<%= config.app %>/styles/pixelate.css'
+                    ]
+                }
+            }
+        },
+        uglify: {
+            dist: {
+                files: {
+                    '<%= config.dist %>/pixelate.min.js': ['<%= config.app %>/scripts/pixelate.js']
+                }
+            }
+        },
         // concat: {
-        //     dist: {}
+        //     build: {}
         // },
 
         // Copies remaining files to places other tasks can use
         copy: {
-            dist: {
+            build: {
                 files: [{
                     expand: true,
                     dot: true,
                     cwd: '<%= config.app %>',
-                    dest: '<%= config.dist %>',
+                    dest: '<%= config.build %>',
                     src: [
                         '*.{ico,png,txt}',
                         '.htaccess',
@@ -281,24 +280,44 @@ module.exports = function (grunt) {
                     ]
                 }]
             },
+            dist: {
+                files: [
+                    {
+                        expand: true,
+                        flatten: true,
+                        cwd: '<%= config.app %>/bower_components/jquery/dist/',
+                        src: ['jquery.min.js'],
+                        dest: '<%= config.dist %>/',
+                    }
+                ]
+            },
             styles: {
                 expand: true,
                 dot: true,
                 cwd: '<%= config.app %>/styles',
                 dest: '.tmp/styles/',
                 src: '{,*/}*.css'
+            },
+            scripts: {
+                expand: true,
+                dot: true,
+                cwd: '<%= config.dist %>/',
+                dest: '.tmp/dist/',
+                src: '*'
             }
         },
 
         // Run some tasks in parallel to speed up build process
         concurrent: {
             server: [
-                'copy:styles'
+                'copy:styles',
+                'copy:scripts'
             ],
             test: [
-                'copy:styles'
+                'copy:styles',
+                'copy:scripts'
             ],
-            dist: [
+            build: [
                 'copy:styles',
                 'imagemin',
                 'svgmin'
@@ -308,8 +327,8 @@ module.exports = function (grunt) {
 
 
     grunt.registerTask('serve', function (target) {
-        if (target === 'dist') {
-            return grunt.task.run(['build', 'connect:dist:keepalive']);
+        if (target === 'build') {
+            return grunt.task.run(['build', 'connect:build:keepalive']);
         }
 
         grunt.task.run([
@@ -341,13 +360,15 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask('build', [
+        'clean:build',
         'clean:dist',
         'useminPrepare',
-        'concurrent:dist',
+        'concurrent:build',
         'autoprefixer',
         'concat',
         'cssmin',
         'uglify',
+        'copy:build',
         'copy:dist',
         'rev',
         'usemin',

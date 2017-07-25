@@ -40,6 +40,12 @@
         }).
         on('dispose', function () {
             console.log('disposed');
+        }).
+        on('enableKeyboard', function() {
+            console.log('keyboard:enabled');
+        }).
+        on('disableKeyboard', function() {
+            console.log('keyboard:disabled');
         });
     }
 
